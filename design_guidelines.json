@@ -1,0 +1,128 @@
+{
+  "brand_identity": {
+    "name": "Vivam Software Services",
+    "archetype": "The Performance Pro (Enterprise Tech)",
+    "tone": "Innovative, Trustworthy, Premium, Scalable",
+    "theme_strategy": "Dual Theme (Deep Navy Dark Mode / Cool Swiss Light Mode)",
+    "core_philosophy": "Fusion of robust engineering and fluid design. Not just software, but digital acceleration."
+  },
+  "typography": {
+    "primary_font": {
+      "name": "Outfit",
+      "type": "Geometric Sans",
+      "weights": ["400", "500", "700"],
+      "usage": "Headings, Hero Text, Big Numbers",
+      "cdn_import": "https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap"
+    },
+    "secondary_font": {
+      "name": "Inter",
+      "type": "Sans Serif",
+      "weights": ["400", "500", "600"],
+      "usage": "Body text, UI elements, Buttons, Inputs",
+      "cdn_import": "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    },
+    "scale": {
+      "h1": "text-5xl md:text-7xl font-bold tracking-tight leading-none",
+      "h2": "text-4xl md:text-5xl font-bold tracking-tight",
+      "h3": "text-2xl md:text-3xl font-semibold",
+      "body": "text-base md:text-lg text-muted-foreground leading-relaxed",
+      "caption": "text-sm font-medium tracking-wider uppercase text-primary"
+    }
+  },
+  "colors": {
+    "palette": {
+      "primary": {
+        "hex": "#3B82F6",
+        "tailwind": "bg-blue-500",
+        "description": "Electric Blue - Action, Trust, Tech"
+      },
+      "secondary": {
+        "hex": "#8B5CF6",
+        "tailwind": "bg-violet-500",
+        "description": "Digital Violet - Innovation, Depth (Gradients)"
+      },
+      "dark_bg": {
+        "hex": "#020617",
+        "tailwind": "bg-slate-950",
+        "description": "Deep Navy/Black - Premium Dark Mode Base"
+      },
+      "light_bg": {
+        "hex": "#F8FAFC",
+        "tailwind": "bg-slate-50",
+        "description": "Cool White - Clean Light Mode Base"
+      }
+    },
+    "gradients": {
+      "hero_glow": "bg-gradient-to-r from-blue-600 via-violet-600 to-indigo-600",
+      "glass_surface": "bg-white/5 backdrop-blur-xl border-white/10"
+    }
+  },
+  "layout_strategies": {
+    "container": "max-w-7xl mx-auto px-6 md:px-12",
+    "spacing": "py-20 md:py-32",
+    "grid_system": "Bento Grid (Grid Cols 1 -> 4 -> 12)",
+    "card_style": "Glassmorphism: bg-background/60 backdrop-blur-lg border border-border/50 shadow-sm hover:shadow-md transition-all duration-300"
+  },
+  "components_map": {
+    "navbar": {
+      "type": "Sticky Glass",
+      "behavior": "Fixed top, backdrop-blur-md, border-b border-border/10",
+      "elements": ["Logo", "Nav Links (Hover Underline)", "Theme Toggle", "CTA Button"]
+    },
+    "hero": {
+      "layout": "Split Screen (Left Text, Right Visual)",
+      "visual": "Abstract 3D Network or Animated Gradient Orb",
+      "interaction": "Parallax on scroll, Text reveal"
+    },
+    "services": {
+      "layout": "Bento Grid",
+      "style": "Cards with hover-glow effects",
+      "icons": "Lucide React (custom colored)"
+    },
+    "tech_stack": {
+      "layout": "Infinite Marquee (Logo Scroller)",
+      "style": "Greyscale logos that light up colored on hover"
+    },
+    "testimonials": {
+      "layout": "Horizontal Slider",
+      "style": "Large quote marks, profile picture prominent"
+    },
+    "contact_form": {
+      "layout": "Two Column (Form Left, Info/Map Right)",
+      "style": "Clean inputs with floating labels or minimal borders"
+    }
+  },
+  "assets": {
+    "images": {
+      "hero_bg": "https://images.unsplash.com/photo-1768330187404-59e46cf222c9?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2OTF8MHwxfHNlYXJjaHwyfHxhYnN0cmFjdCUyMGZ1dHVyaXN0aWMlMjB0ZWNobm9sb2d5JTIwYmFja2dyb3VuZCUyMGJsdWUlMjBuZXR3b3JrfGVufDB8fHx8MTc3MjczMDU5MHww&ixlib=rb-4.1.0&q=85",
+      "about_team": "https://images.unsplash.com/photo-1758873272809-7947b9a73fe5?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MjJ8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBjb3Jwb3JhdGUlMjBvZmZpY2UlMjB0ZWFtJTIwY29sbGFib3JhdGlvbiUyMHRlY2hub2xvZ3l8ZW58MHx8fHwxNzcyNzMwNTg5fDA&ixlib=rb-4.1.0&q=85",
+      "mobile_service": "https://images.unsplash.com/photo-1758599543139-e0e0d7b4de02?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MjJ8MHwxfHNlYXJjaHwzfHxtb2Rlcm4lMjBjb3Jwb3JhdGUlMjBvZmZpY2UlMjB0ZWFtJTIwY29sbGFib3JhdGlvbiUyMHRlY2hub2xvZ3l8ZW58MHx8fHwxNzcyNzMwNTg5fDA&ixlib=rb-4.1.0&q=85",
+      "contact_bg": "https://images.unsplash.com/photo-1717343656288-a1c0c23ba2df?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODR8MHwxfHNlYXJjaHwyfHxtb2Rlcm4lMjBvZmZpY2UlMjBidWlsZGluZyUyMGFyY2hpdGVjdHVyZSUyMGdsYXNzJTIwYWVzdGhldGljfGVufDB8fHx8MTc3MjczMDYxMHww&ixlib=rb-4.1.0&q=85",
+      "testimonial_1": "https://images.unsplash.com/photo-1655249481446-25d575f1c054?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwyfHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdCUyMHBvcnRyYWl0JTIwYnVzaW5lc3MlMjBwZXJzb258ZW58MHx8fHwxNzcyNzMwNjA5fDA&ixlib=rb-4.1.0&q=85",
+      "testimonial_2": "https://images.unsplash.com/photo-1717068342612-64ed5d77124d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHw0fHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdCUyMHBvcnRyYWl0JTIwYnVzaW5lc3MlMjBwZXJzb258ZW58MHx8fHwxNzcyNzMwNjA5fDA&ixlib=rb-4.1.0&q=85",
+      "testimonial_3": "https://images.unsplash.com/photo-1655249493799-9cee4fe983bb?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdCUyMHBvcnRyYWl0JTIwYnVzaW5lc3MlMjBwZXJzb258ZW58MHx8fHwxNzcyNzMwNjA5fDA&ixlib=rb-4.1.0&q=85"
+    },
+    "icons": "Lucide React (mandatory)",
+    "tech_stack_logos": "Use Simple Icons CDN (e.g., https://cdn.simpleicons.org/react/3B82F6) for: React, Next.js, TypeScript, Tailwind CSS, Spring Boot, Node.js, Python, FastAPI, MongoDB, PostgreSQL, Redis, Docker, AWS, Kubernetes"
+  },
+  "instructions_to_main_agent": {
+    "step_1": "Install 'framer-motion' immediately. It is required for all animations.",
+    "step_2": "Update 'tailwind.config.js' to include the 'Outfit' font family and custom colors.",
+    "step_3": "Create a 'Layout' component that wraps the app with the Navbar, Footer, and Theme Provider.",
+    "step_4": "Implement the Hero section with the 'Abstract Blue Grid' image as a subtle background with a dark overlay, and use Framer Motion for text entrance.",
+    "step_5": "Build the 'Services' section using a Bento Grid layout. Use glassmorphism cards.",
+    "step_6": "Implement the Contact Form with fields: Name, Email, Company, Phone, Project Details, Budget. Ensure it validates using Zod.",
+    "step_7": "Ensure Dark/Light mode toggle works perfectly. Default to Dark Mode for the 'Premium' feel.",
+    "step_8": "Use the provided Unsplash URLs for the respective sections. Do not leave placeholders.",
+    "step_9": "Add 'data-testid' to all interactive elements."
+  },
+  "universal_guidelines": [
+    "Do not use generic 'Inter' for headings. Use 'Outfit'.",
+    "Do not use pure black (#000000). Use Slate-950 (#020617).",
+    "Ensure all text has sufficient contrast (AA standard).",
+    "Use 'tracking-tight' for all large headings.",
+    "Add 'hover:scale-105' transitions to cards for interactivity.",
+    "Use 'lucide-react' for all UI icons.",
+    "Keep the design 'Airy' - use py-24 or py-32 between major sections."
+  ]
+}
