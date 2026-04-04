@@ -7,17 +7,17 @@ import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 const blogPosts = [
   {
     title: 'The Future of AI in Enterprise Solutions',
-    excerpt: 'Explore how generative AI is transforming business automation and customer engagement in 2025.',
+    excerpt: 'Explore how generative AI is transforming business automation and customer engagement in 2026.',
     category: 'AI & Innovation',
-    date: 'March 15, 2025',
+    date: 'March 15, 2026',
     author: 'Vasu',
     image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop'
   },
   {
-    title: 'Top 5 Web Trends for 2025',
+    title: 'Top 5 Web Trends for 2026',
     excerpt: 'Stay ahead of the curve with our insights into the latest web technologies and design patterns.',
     category: 'Development',
-    date: 'March 10, 2025',
+    date: 'March 10, 2026',
     author: 'Team Vivam',
     image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop'
   },
@@ -25,7 +25,7 @@ const blogPosts = [
     title: 'Securing Your Cloud Infrastructure',
     excerpt: 'Best practices for protecting your data and applications in a multi-cloud environment.',
     category: 'Security',
-    date: 'March 5, 2025',
+    date: 'March 5, 2026',
     author: 'Security Lead',
     image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop'
   }

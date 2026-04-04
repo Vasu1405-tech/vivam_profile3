@@ -24,7 +24,7 @@ const workshopCategories = [
     icon: Presentation,
     title: 'Expert Tech Seminars',
     description: 'Inspiring seminars by industry leaders on the future of technology and emerging career paths.',
-    features: ['Guest Lectures', 'Tech Trends 2025', 'Q&A Sessions', 'Networking'],
+    features: ['Guest Lectures', 'Tech Trends 2026', 'Q&A Sessions', 'Networking'],
     color: 'from-emerald-500/20 to-emerald-600/5',
     iconColor: 'text-emerald-500'
   }
@@ -166,7 +166,7 @@ export default function Workshops() {
           >
             <div>
               <h3 className="text-2xl font-bold font-outfit text-foreground">Event Highlights</h3>
-              <p className="text-muted-foreground mt-1">Sneak peek into our recent sessions and workshops in 2025</p>
+              <p className="text-muted-foreground mt-1">Sneak peek into our recent sessions and workshops in 2026</p>
             </div>
             <div className="flex items-center gap-2 text-sm font-medium text-primary cursor-pointer hover:underline">
               View All Moments <ArrowRight className="w-4 h-4" />
