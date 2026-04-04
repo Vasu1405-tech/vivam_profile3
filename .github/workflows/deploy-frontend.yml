@@ -12,36 +12,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Debug folders (IMPORTANT)
-        run: ls -R
-
-      - uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: 18
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package.json' # Adjust path if needed
 
       - name: Install dependencies
-        run: |
-          cd vivam_profile3-main/frontend
-          npm install
+        run: npm install
+        working-directory: frontend # This is cleaner than manual 'cd'
 
       - name: Build project
-        run: |
-          cd vivam_profile3-main/frontend
-          npm run build
-
-      - name: Check build
-        run: |
-          ls -la vivam_profile3-main/frontend/build
-      - name: Debug folders
-        run: ls -R
-
-      - name: Install AWS CLI
-        run: sudo apt-get install awscli -y
+        run: npm run build
+        working-directory: frontend
 
       - name: Deploy to S3
         run: |
-          aws s3 sync vivam_profile3-main/frontend/build s3://$S3_BUCKET --delete
+          aws s3 sync build/ s3://$S3_BUCKET --delete
+        working-directory: frontend
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+          S3_BUCKET: ${{ secrets.S3_BUCKET_NAME }} # Add this secret in GitHub
