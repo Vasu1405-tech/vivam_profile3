@@ -27,6 +27,8 @@ jobs:
       - name: Build project
         run: npm run build
         working-directory: frontend
+        env:
+          REACT_APP_BACKEND_URL: https://vivam-backend.onrender.com
 
       - name: Deploy to S3
         run: |
