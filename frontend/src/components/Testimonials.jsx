@@ -7,19 +7,19 @@ const testimonials = [
   {
     quote: 'Vivam delivered our enterprise platform with excellent performance and scalability. Their team understood our complex requirements from day one.',
     name: 'Rajesh Kumar',
-    role: 'CTO, TechVentures India',
+    role: 'CTO, vivamedutech.io',
     image: 'https://images.unsplash.com/photo-1655249481446-25d575f1c054?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwyfHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdCUyMHBvcnRyYWl0JTIwYnVzaW5lc3MlMjBwZXJzb258ZW58MHx8fHwxNzcyNzMwNjA5fDA&ixlib=rb-4.1.0&q=85',
   },
   {
     quote: 'The mobile app they built for us exceeded expectations. Clean code, great architecture, and delivered ahead of schedule. Highly recommended.',
     name: 'Sarah Mitchell',
-    role: 'Product Manager, HealthFirst',
+    role: 'Product Manager, VS Techlog',
     image: 'https://images.unsplash.com/photo-1717068342612-64ed5d77124d?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHw0fHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdCUyMHBvcnRyYWl0JTIwYnVzaW5lc3MlMjBwZXJzb258ZW58MHx8fHwxNzcyNzMwNjA5fDA&ixlib=rb-4.1.0&q=85',
   },
   {
     quote: 'Working with Vivam was a game-changer for our startup. They built our MVP in record time and helped us secure our Series A funding.',
     name: 'David Chen',
-    role: 'Founder, LogiTrack',
+    role: 'Founder, PRN Tech',
     image: 'https://images.unsplash.com/photo-1655249493799-9cee4fe983bb?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2Mzl8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBoZWFkc2hvdCUyMHBvcnRyYWl0JTIwYnVzaW5lc3MlMjBwZXJzb258ZW58MHx8fHwxNzcyNzMwNjA5fDA&ixlib=rb-4.1.0&q=85',
   },
 ];

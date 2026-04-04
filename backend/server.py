@@ -111,7 +111,7 @@ def send_contact_email(form: ContactForm):
         <tr><td style="padding: 8px; font-weight: bold; border-bottom: 1px solid #eee;">Description</td>
             <td style="padding: 8px; border-bottom: 1px solid #eee;">{form.description}</td></tr>
       </table>
-      <p style="margin-top: 20px; color: #888; font-size: 12px;">Sent from Vivam Software Services website contact form</p>
+      <p style="margin-top: 20px; color: #888; font-size: 12px;">Sent from Vivam Software Services & IT Trainings website contact form</p>
     </body>
     </html>
     """

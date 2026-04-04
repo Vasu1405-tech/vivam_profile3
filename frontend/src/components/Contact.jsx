@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MapPin, Mail, Phone, Send, CheckCircle, Loader2 } from 'lucide-react';
 import axios from 'axios';
+import { toast } from 'sonner';
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
@@ -27,10 +28,12 @@ export default function Contact() {
     try {
       await axios.post(`${API}/contact`, form);
       setStatus('success');
+      toast.success('Message sent successfully! We\'ll get back to you soon.');
       setForm({ name: '', company: '', email: '', phone: '', description: '', budget: '' });
       setTimeout(() => setStatus('idle'), 4000);
-    } catch {
+    } catch (error) {
       setStatus('error');
+      toast.error('Failed to send message. Please try again later.');
       setTimeout(() => setStatus('idle'), 4000);
     }
   };
@@ -183,8 +186,8 @@ export default function Contact() {
                 <div>
                   <h3 className="text-sm font-semibold text-foreground mb-0.5">Office Address</h3>
                   <p className="text-sm text-muted-foreground">
-                    Vivam Software Services<br />
-                    2-217, Teacher's Colony, Rayudupalem, Ramanayyapeta, Andhra Pradesh 533005.
+                    Vivam Software Services & IT Trainings<br />
+                    2-217, Teacher's Colony, Rayudupalem, Ramanayyapeta, Kakinada, Andhra Pradesh 533005.
                   </p>
                 </div>
               </div>
@@ -195,7 +198,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-foreground mb-0.5">Email</h3>
-                  <p className="text-sm text-muted-foreground">contact@vivamsofttech.com</p>
+                  <p className="text-sm text-muted-foreground">contact@support.vivamsofttech.com</p>
                 </div>
               </div>
 
@@ -205,7 +208,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-foreground mb-0.5">Phone</h3>
-                  <p className="text-sm text-muted-foreground">+91 9177593322</p>
+                  <p className="text-sm text-muted-foreground">+91 9177523311</p>
                 </div>
               </div>
             </div>

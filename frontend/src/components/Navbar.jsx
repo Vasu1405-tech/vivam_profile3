@@ -7,8 +7,9 @@ import { Sun, Moon, Menu, X } from 'lucide-react';
 const navLinks = [
   { label: 'About', href: '#about' },
   { label: 'Services', href: '#services' },
+  { label: 'Workshops', href: '#workshops' },
   { label: 'Portfolio', href: '#portfolio' },
-  { label: 'Testimonials', href: '#testimonials' },
+  { label: 'FAQ', href: '#faq' },
   { label: 'Contact', href: '#contact' },
 ];
 
@@ -63,7 +64,7 @@ export default function Navbar() {
             data-testid="nav-cta-btn"
             onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
           >
-            Start a Project
+            Get Quote
           </Button>
 
           <Button
@@ -107,7 +108,7 @@ export default function Navbar() {
                   document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
                 }}
               >
-                Start a Project
+                Get Quote
               </Button>
             </div>
           </motion.div>

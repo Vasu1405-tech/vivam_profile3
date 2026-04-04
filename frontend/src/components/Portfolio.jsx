@@ -6,34 +6,17 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
 
-const comingSoonProducts = [
-  {
-    icon: Briefcase,
-    title: 'AI Job Assist',
-    description: 'An intelligent AI-powered job assistance platform that helps job seekers find the right opportunities, auto-generate tailored resumes, prepare for interviews with AI mock sessions, and get personalized career recommendations — all in one place.',
-    tech: ['React', 'Node.js', 'OpenAI', 'MongoDB', 'Python'],
-    gradient: 'from-blue-500 to-violet-500',
-  },
-  {
-    icon: UsersRound,
-    title: 'Employee Management System',
-    description: 'A comprehensive employee management platform with payroll processing, attendance tracking, leave management, performance reviews, and HR analytics — designed to streamline workforce operations for growing businesses.',
-    tech: ['React', 'Spring Boot', 'PostgreSQL', 'Docker'],
-    gradient: 'from-emerald-500 to-teal-400',
-  },
-];
-
 const projects = [
   {
     title: 'Learning Management Platform',
-    description: 'A comprehensive LMS with live classes, assessments, and progress tracking for 50K+ students.',
+    description: 'A comprehensive Learning Management System with live classes, assessments, and tracking for 10K+ students.',
     tech: ['React', 'Node.js', 'MongoDB', 'AWS'],
     image: 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=600&h=400&fit=crop',
     caseStudy: {
-      client: 'EduTech Academy',
+      client: 'vivamedutech.io',
       duration: '6 months',
       team: '8 developers',
-      challenge: 'The client needed a scalable learning platform to support 50,000+ concurrent students with live video classes, real-time assessments, and detailed analytics — replacing an outdated system that frequently crashed during peak hours.',
+      challenge: 'The client needed a scalable learning platform to support 10,000+ concurrent students with live video classes, real-time assessments, and detailed analytics — replacing an outdated system that frequently crashed during peak hours.',
       solution: 'We built a cloud-native LMS using React for the frontend, Node.js microservices on the backend, and MongoDB for flexible content storage. AWS services (EC2, S3, CloudFront, MediaLive) were used for video streaming and global content delivery.',
       features: [
         'Live video classes with real-time Q&A and screen sharing',
@@ -43,7 +26,7 @@ const projects = [
         'Admin panel for course management and instructor tools',
       ],
       results: [
-        { metric: '50K+', label: 'Active Students' },
+        { metric: '10K+', label: 'Active Students' },
         { metric: '99.9%', label: 'Uptime Achieved' },
         { metric: '3x', label: 'Faster Load Times' },
         { metric: '85%', label: 'Student Satisfaction' },
@@ -56,7 +39,7 @@ const projects = [
     tech: ['Next.js', 'Spring Boot', 'PostgreSQL'],
     image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop',
     caseStudy: {
-      client: 'TechCorp Industries',
+      client: 'VS Techlog Industries',
       duration: '8 months',
       team: '6 developers',
       challenge: 'The client managed HR processes across 5 offices using spreadsheets and disconnected tools, leading to payroll errors, missed attendance records, and no visibility into employee performance.',
@@ -108,10 +91,10 @@ const projects = [
     tech: ['Python', 'TensorFlow', 'React', 'Docker'],
     image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=600&h=400&fit=crop',
     caseStudy: {
-      client: 'GlobalServe Inc.',
+      client: 'Private Company.',
       duration: '4 months',
       team: '5 developers',
-      challenge: 'The client\'s support team handled 10,000+ tickets monthly across 3 languages. Response times averaged 4 hours and customer satisfaction was declining — they needed an AI-first approach to handle routine queries instantly.',
+      challenge: 'The client\'s support team handled 1,000+ tickets monthly across 3 languages. Response times averaged 4 hours and customer satisfaction was declining — they needed an AI-first approach to handle routine queries instantly.',
       solution: 'We built a custom NLP chatbot using TensorFlow with intent classification and entity extraction. The React-based admin panel allows non-technical staff to train the bot and manage conversation flows. Docker containerization ensures easy deployment and scaling.',
       features: [
         'Multi-language support (English, Hindi, Telugu)',
@@ -134,21 +117,21 @@ const projects = [
     tech: ['TypeScript', 'Node.js', 'PostgreSQL', 'AWS'],
     image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&h=400&fit=crop',
     caseStudy: {
-      client: 'MegaCorp Enterprises',
+      client: 'PRN Tech Enterprises',
       duration: '7 months',
       team: '9 developers',
-      challenge: 'The client had over 200 manual business processes across departments — approvals, data entry, report generation — consuming thousands of employee hours monthly with high error rates.',
+      challenge: 'The client had over 20 manual business processes across departments — approvals, data entry, report generation — consuming hundreds of employee hours monthly with high error rates.',
       solution: 'We designed a visual workflow builder (drag-and-drop) in TypeScript/React, backed by a Node.js orchestration engine. PostgreSQL handles state management and audit logs. AWS Lambda functions power individual workflow steps for serverless scalability.',
       features: [
         'Visual drag-and-drop workflow designer',
         'Conditional branching and parallel execution',
-        'Template library with 50+ pre-built automations',
+        'Template library with 10+ pre-built automations',
         'Real-time monitoring and execution dashboards',
         'API connectors for Slack, Email, Google Sheets, SAP',
       ],
       results: [
         { metric: '80%', label: 'Process Automation' },
-        { metric: '200+', label: 'Workflows Automated' },
+        { metric: '20+', label: 'Workflows Automated' },
         { metric: '5,000hrs', label: 'Monthly Time Saved' },
         { metric: '95%', label: 'Error Rate Reduction' },
       ],
@@ -187,113 +170,47 @@ export default function Portfolio() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-              className="glass-card rounded-2xl overflow-hidden group hover:scale-[1.02] transition-all duration-300"
+              transition={{ duration: 0.5, delay: i * 0.08, type: "spring", stiffness: 100 }}
+              whileHover={{ y: -8, scale: 1.02 }}
+              className="glass-card rounded-2xl overflow-hidden group relative transition-all hover:shadow-2xl hover:shadow-primary/20 border border-transparent hover:border-primary/30"
               data-testid={`portfolio-card-${i}`}
             >
-              <div className="relative h-48 overflow-hidden">
+              <div className="relative h-56 overflow-hidden">
                 <img
                   src={project.image}
                   alt={project.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/50 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-300" />
+
+                <div className="absolute bottom-6 left-6 right-6 flex flex-col items-center justify-end opacity-0 translate-y-6 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-out z-10">
+                  <Button
+                    size="default"
+                    className="w-full shadow-xl bg-primary hover:bg-primary/90 text-primary-foreground group/btn"
+                    onClick={() => setSelectedProject(project)}
+                  >
+                    View Case Study <ArrowRight className="ml-2 w-4 h-4 group-hover/btn:translate-x-1.5 transition-transform duration-300" />
+                  </Button>
+                </div>
               </div>
-              <div className="p-6">
-                <h3 className="text-lg font-semibold font-outfit text-foreground mb-2">
+
+              <div className="p-6 relative z-10 bg-background/5 backdrop-blur-sm group-hover:bg-background/0 transition-colors duration-500">
+                <h3 className="text-xl font-bold font-outfit text-foreground mb-2 group-hover:text-primary transition-colors duration-300">
                   {project.title}
                 </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                <p className="text-sm text-muted-foreground leading-relaxed mb-4 group-hover:text-foreground/80 transition-colors duration-300">
                   {project.description}
                 </p>
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {project.tech.map((t) => (
-                    <Badge key={t} variant="secondary" className="text-xs font-normal">
+                <div className="flex flex-wrap gap-2">
+                  {project.tech.map((t, idx) => (
+                    <Badge
+                      key={t}
+                      variant="secondary"
+                      className="text-xs font-normal bg-secondary/60 hover:bg-secondary/100 border border-transparent group-hover:border-primary/20 transition-all duration-300 delay-100"
+                    >
                       {t}
                     </Badge>
                   ))}
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="p-0 h-auto text-primary hover:bg-transparent"
-                  data-testid={`view-case-study-${i}`}
-                  onClick={() => setSelectedProject(project)}
-                >
-                  View Case Study <ArrowRight className="ml-1 w-3.5 h-3.5" />
-                </Button>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Coming Soon — AI Products */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.5 }}
-          className="text-center mt-24 mb-12"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-5">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-primary">Coming Soon</span>
-          </div>
-          <h3 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-foreground font-outfit">
-            Our Products
-          </h3>
-          <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            Innovative applications we're building to transform businesses
-          </p>
-        </motion.div>
-
-        <div className="grid md:grid-cols-2 gap-5">
-          {comingSoonProducts.map((product, i) => (
-            <motion.div
-              key={product.title}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="glass-card rounded-2xl p-8 relative overflow-hidden group hover:scale-[1.02] transition-all duration-300"
-              data-testid={`coming-soon-card-${i}`}
-            >
-              {/* Subtle gradient glow behind card */}
-              <div className={`absolute -top-20 -right-20 w-48 h-48 bg-gradient-to-br ${product.gradient} rounded-full opacity-10 blur-3xl group-hover:opacity-20 transition-opacity duration-500`} />
-
-              {/* Coming Soon Badge */}
-              <div className="absolute top-5 right-5">
-                <div className="relative">
-                  <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold text-white bg-gradient-to-r ${product.gradient} shadow-lg`}>
-                    <span className="relative flex h-2 w-2">
-                      <span className={`animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75`}></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
-                    </span>
-                    Coming Soon
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex gap-5 relative z-10">
-                {/* Icon */}
-                <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${product.gradient} flex items-center justify-center flex-shrink-0 shadow-lg`}>
-                  <product.icon className="w-6 h-6 text-white" />
-                </div>
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-lg font-semibold font-outfit text-foreground mb-2">
-                    {product.title}
-                  </h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                    {product.description}
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {product.tech.map((t) => (
-                      <Badge key={t} variant="secondary" className="text-xs font-normal">
-                        {t}
-                      </Badge>
-                    ))}
-                  </div>
                 </div>
               </div>
             </motion.div>
@@ -315,7 +232,6 @@ export default function Portfolio() {
                 </DialogDescription>
               </DialogHeader>
 
-              {/* Project Meta */}
               <div className="grid grid-cols-3 gap-4 my-4">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Users className="w-4 h-4 text-primary" />
@@ -342,7 +258,6 @@ export default function Portfolio() {
 
               <Separator />
 
-              {/* Project Image */}
               <div className="rounded-xl overflow-hidden my-4">
                 <img
                   src={selectedProject.image}
@@ -351,7 +266,6 @@ export default function Portfolio() {
                 />
               </div>
 
-              {/* Challenge */}
               <div className="mb-5">
                 <h4 className="text-sm font-semibold font-outfit text-foreground uppercase tracking-wider mb-2 text-rose-500">
                   The Challenge
@@ -361,7 +275,6 @@ export default function Portfolio() {
                 </p>
               </div>
 
-              {/* Solution */}
               <div className="mb-5">
                 <h4 className="text-sm font-semibold font-outfit text-foreground uppercase tracking-wider mb-2 text-blue-500">
                   Our Solution
@@ -371,7 +284,6 @@ export default function Portfolio() {
                 </p>
               </div>
 
-              {/* Key Features */}
               <div className="mb-5">
                 <h4 className="text-sm font-semibold font-outfit text-foreground uppercase tracking-wider mb-3 text-violet-500">
                   Key Features
@@ -388,7 +300,6 @@ export default function Portfolio() {
 
               <Separator />
 
-              {/* Results */}
               <div className="mt-5">
                 <h4 className="text-sm font-semibold font-outfit text-foreground uppercase tracking-wider mb-4 flex items-center gap-2">
                   <TrendingUp className="w-4 h-4 text-emerald-500" />
@@ -406,7 +317,6 @@ export default function Portfolio() {
                 </div>
               </div>
 
-              {/* Tech Stack */}
               <div className="mt-5 flex flex-wrap gap-1.5">
                 {selectedProject.tech.map((t) => (
                   <Badge key={t} variant="secondary" className="text-xs">

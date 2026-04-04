@@ -3,10 +3,10 @@ import { motion } from 'framer-motion';
 import { Briefcase, Users, Clock, Layers } from 'lucide-react';
 
 const stats = [
-  { icon: Briefcase, value: '50+', label: 'Projects Delivered', color: 'text-blue-500 bg-blue-500/10' },
+  { icon: Briefcase, value: '10+', label: 'Projects Delivered', color: 'text-blue-500 bg-blue-500/10' },
   { icon: Users, value: '10+', label: 'Technology Experts', color: 'text-violet-500 bg-violet-500/10' },
   { icon: Clock, value: '2+', label: 'Years Experience', color: 'text-emerald-500 bg-emerald-500/10' },
-  { icon: Layers, value: '10+', label: 'Technologies', color: 'text-amber-500 bg-amber-500/10' },
+  { icon: Layers, value: '20+', label: 'Workflows Automated', color: 'text-amber-500 bg-amber-500/10' },
 ];
 
 export default function Highlights() {

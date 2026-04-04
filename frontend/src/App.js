@@ -7,14 +7,18 @@ import Hero from "@/components/Hero";
 import Highlights from "@/components/Highlights";
 import About from "@/components/About";
 import Services from "@/components/Services";
+import Workshops from "@/components/Workshops";
 import TechStack from "@/components/TechStack";
 import Solutions from "@/components/Solutions";
 import Industries from "@/components/Industries";
 import Portfolio from "@/components/Portfolio";
 import WhyChoose from "@/components/WhyChoose";
-import Testimonials from "@/components/Testimonials";
+// import Testimonials from "@/components/Testimonials";
 import CTA from "@/components/CTA";
 import Contact from "@/components/Contact";
+import FAQ from "@/components/FAQ";
+import { Toaster } from 'sonner';
+import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 import Footer from "@/components/Footer";
 
 function App() {
@@ -44,15 +48,19 @@ function App() {
           <Highlights />
           <About />
           <Services />
+          <Workshops />
           <TechStack />
           <Solutions />
           <Industries />
           <Portfolio />
+          <FAQ />
           <WhyChoose />
-          <Testimonials />
+          {/* <Testimonials /> */}
           <CTA />
           <Contact />
         </main>
+        <Toaster position="bottom-right" richColors />
+        <FloatingWhatsApp />
         <Footer />
       </div>
     </ThemeProvider>

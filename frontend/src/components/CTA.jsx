@@ -19,10 +19,10 @@ export default function CTA() {
 
           <div className="relative z-10 py-20 md:py-28 px-8 md:px-16 text-center">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-white font-outfit">
-              Have a Project Idea?
+              Ready to Build Your Next Big Thing?
             </h2>
             <p className="mt-4 text-base md:text-lg text-white/80 max-w-xl mx-auto">
-              Let's build something amazing together. Transform your vision into a scalable digital product.
+              Let's build something amazing together. Transform your vision into a scalable, high-performance digital product.
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-4">
               <Button
@@ -31,7 +31,7 @@ export default function CTA() {
                 data-testid="cta-start-project-btn"
                 onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                Start a Project
+                Get a Free Consultation
                 <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
               <Button
@@ -41,7 +41,7 @@ export default function CTA() {
                 data-testid="cta-contact-btn"
                 onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
               >
-                Contact Us
+                Talk to Our Experts
               </Button>
             </div>
           </div>

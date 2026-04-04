@@ -13,16 +13,13 @@ const footerLinks = {
   ],
   Company: [
     { label: 'About Us', href: '#about' },
-    { label: 'Careers', href: '#about' },
-    { label: 'Case Studies', href: '#portfolio' },
-    { label: 'Blog', href: '#about' },
+    { label: 'Portfolio', href: '#portfolio' },
     { label: 'Contact', href: '#contact' },
   ],
   Resources: [
-    { label: 'Documentation', href: '#solutions' },
     { label: 'Tech Stack', href: '#techstack' },
     { label: 'Industries', href: '#industries' },
-    { label: 'FAQ', href: '#why-choose' },
+    { label: 'FAQ', href: '#faq' },
     { label: 'Support', href: '#contact' },
   ],
 };
@@ -31,7 +28,7 @@ const socialLinks = [
   { icon: Twitter, href: '#', label: 'Twitter' },
   { icon: Linkedin, href: '#', label: 'LinkedIn' },
   { icon: Github, href: '#', label: 'GitHub' },
-  { icon: Mail, href: 'mailto:contact@vivamsofttech.com', label: 'Email' },
+  { icon: Mail, href: 'mailto:contact@support.vivamsofttech.com', label: 'Email' },
 ];
 
 export default function Footer() {
@@ -97,7 +94,7 @@ export default function Footer() {
 
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-xs text-muted-foreground">
-              &copy; {new Date().getFullYear()} Vivam Software Services. All rights reserved.
+              &copy; {new Date().getFullYear()} Vivam Software Services & IT Trainings. All rights reserved.
             </p>
             <div className="flex gap-6">
               <button
@@ -152,7 +149,7 @@ export default function Footer() {
                 </section>
                 <section>
                   <h3 className="text-base font-semibold text-foreground mb-2">5. Contact Us</h3>
-                  <p>If you have any questions about this Privacy Policy or our data practices, please contact us at <strong>contact@vivamsofttech.com</strong>.</p>
+                  <p>If you have any questions about this Privacy Policy or our data practices, please contact us at <strong>contact@support.vivamsofttech.com</strong>.</p>
                 </section>
               </>
             )}

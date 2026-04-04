@@ -47,7 +47,7 @@ export default function About() {
             </span>
           </h2>
           <p className="mt-6 text-base md:text-lg text-muted-foreground leading-relaxed">
-            Vivam Software Services is a fast-growing IT company delivering high-quality
+            Vivam Software Services & IT Trainings is a fast-growing IT company delivering high-quality
             software solutions, training, and digital transformation services. We combine
             deep technical expertise with a passion for innovation to build products
             that make a real impact.
