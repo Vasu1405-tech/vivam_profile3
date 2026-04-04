@@ -10,36 +10,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
 
       - name: Install dependencies
         run: |
-          cd frontend
+          cd */frontend
           npm install
 
       - name: Build project
         run: |
-          cd frontend
+          cd */frontend
           npm run build
 
-      - name: Check build output (DEBUG)
+      - name: Check build
         run: |
-          ls -la frontend/dist
+          ls -la */frontend/build
 
       - name: Install AWS CLI
-        run: |
-          sudo apt-get update
-          sudo apt-get install awscli -y
+        run: sudo apt-get install awscli -y
 
       - name: Deploy to S3
         run: |
-          aws s3 sync frontend/dist s3://$S3_BUCKET --delete
+          aws s3 sync */frontend/build s3://$S3_BUCKET --delete
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
