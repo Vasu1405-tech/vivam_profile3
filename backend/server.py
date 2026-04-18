@@ -9,27 +9,50 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import List
 import uuid
 from datetime import datetime, timezone
-
+import aiohttp
+import asyncio
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# Configure logging FIRST
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Create the main app without a prefix
+# Create the main app
 app = FastAPI()
+
+# ✅ CORS MIDDLEWARE - Must be added BEFORE routes
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://www.vivamsofttech.com",
+        "https://vivamsofttech.com",
+        "http://localhost:3000",
+        "http://localhost:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allow_headers=["*"],
+)
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
 
-# Define Models
+# ─── Models ───────────────────────────────────────────────────────────────────
+
 class StatusCheck(BaseModel):
-    model_config = ConfigDict(extra="ignore")  # Ignore MongoDB's _id field
-    
+    model_config = ConfigDict(extra="ignore")
+
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     client_name: str
     timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -37,7 +60,17 @@ class StatusCheck(BaseModel):
 class StatusCheckCreate(BaseModel):
     client_name: str
 
-# Add your routes to the router instead of directly to app
+class ContactForm(BaseModel):
+    name: str
+    company: str = ""
+    email: str
+    phone: str = ""
+    description: str
+    budget: str = ""
+
+
+# ─── Status Routes ────────────────────────────────────────────────────────────
+
 @api_router.get("/")
 async def root():
     return {"message": "Hello World"}
@@ -46,35 +79,25 @@ async def root():
 async def create_status_check(input: StatusCheckCreate):
     status_dict = input.model_dump()
     status_obj = StatusCheck(**status_dict)
-    
-    # Convert to dict and serialize datetime to ISO string for MongoDB
+
     doc = status_obj.model_dump()
     doc['timestamp'] = doc['timestamp'].isoformat()
-    
+
     _ = await db.status_checks.insert_one(doc)
     return status_obj
 
 @api_router.get("/status", response_model=List[StatusCheck])
 async def get_status_checks():
-    # Exclude MongoDB's _id field from the query results
     status_checks = await db.status_checks.find({}, {"_id": 0}).to_list(1000)
-    
-    # Convert ISO string timestamps back to datetime objects
+
     for check in status_checks:
         if isinstance(check['timestamp'], str):
             check['timestamp'] = datetime.fromisoformat(check['timestamp'])
-    
+
     return status_checks
 
 
-# Contact Form Model & Endpoint
-class ContactForm(BaseModel):
-    name: str
-    company: str = ""
-    email: str
-    phone: str = ""
-    description: str
-    budget: str = ""
+# ─── Contact Helpers ──────────────────────────────────────────────────────────
 
 def send_contact_email(form: ContactForm):
     """Send contact form data via SMTP email."""
@@ -134,15 +157,13 @@ def send_contact_email(form: ContactForm):
         logger.error(f"Failed to send contact email: {e}")
         return False
 
-import aiohttp
-import asyncio
 
 async def send_to_google_sheet(form: ContactForm, timestamp: str):
     """Send contact form data to a Google Apps Script Webhook URL."""
     webhook_url = os.environ.get("GOOGLE_SHEET_WEBHOOK_URL", "")
     if not webhook_url:
         return False
-        
+
     payload = {
         "timestamp": timestamp,
         "name": form.name,
@@ -167,22 +188,19 @@ async def send_to_google_sheet(form: ContactForm, timestamp: str):
         return False
 
 
+# ─── Contact Routes ───────────────────────────────────────────────────────────
+
 @api_router.post("/contact")
 async def submit_contact(form: ContactForm):
-    # Prepare standard data
     doc = form.model_dump()
     doc["id"] = str(uuid.uuid4())
     timestamp = datetime.now(timezone.utc).isoformat()
     doc["timestamp"] = timestamp
 
-    # Save to MongoDB
     await db.contact_submissions.insert_one(doc)
     logger.info(f"Contact submission saved from {form.name} ({form.email})")
 
-    # Send email notification (synchronous, but fast enough)
     email_sent = send_contact_email(form)
-
-    # Send to Google Sheets (asynchronous)
     asyncio.create_task(send_to_google_sheet(form, timestamp))
 
     return {
@@ -191,34 +209,25 @@ async def submit_contact(form: ContactForm):
         "email_sent": email_sent,
     }
 
-
 @api_router.get("/contact")
 async def get_contact_submissions():
     submissions = await db.contact_submissions.find({}, {"_id": 0}).to_list(1000)
     return submissions
 
 
-# Include the router in the main app
+# ─── Include Router ───────────────────────────────────────────────────────────
+
 app.include_router(api_router)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-logger = logging.getLogger(__name__)
+# ─── Shutdown ─────────────────────────────────────────────────────────────────
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
     client.close()
+
+
+# ─── Run ──────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
     import uvicorn
