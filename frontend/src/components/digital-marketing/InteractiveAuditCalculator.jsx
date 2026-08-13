@@ -357,82 +357,12 @@ export default function InteractiveAuditCalculator({ onClaimAudit }) {
 
   const handleViewPdfReport = () => {
     if (!auditResult) return;
-    const cleanDomain = (auditResult.domain || 'report').replace(/[^a-zA-Z0-9_-]/g, '_');
-    const fallbackFilename = `Vivam-SEO-Audit-${cleanDomain}.pdf`;
-    if (auditResult.auditId) {
-      const viewUrl = `${API}/digital-marketing/audit/${auditResult.auditId}/pdf/${fallbackFilename}?view=true`;
-      viewDocumentInNewTab(viewUrl);
-      toast.info('Opening official PDF report viewer...');
-    } else {
-      setIsReportModalOpen(true);
-    }
+    setIsReportModalOpen(true);
   };
 
-  const handleDownloadPdfReport = async () => {
+  const handleDownloadPdfReport = () => {
     if (!auditResult) return;
-    const cleanDomain = (auditResult.domain || 'report').replace(/[^a-zA-Z0-9_-]/g, '_');
-    const fallbackFilename = `Vivam-SEO-Audit-${cleanDomain}.pdf`;
-    toast.info('Generating PDF audit report...');
-
-    if (auditResult.auditId) {
-      try {
-        const downloadUrl = `${API}/digital-marketing/audit/${auditResult.auditId}/pdf/${fallbackFilename}`;
-        const res = await axios.get(downloadUrl, { responseType: 'blob' });
-        downloadFileFromResponse(res, fallbackFilename, 'application/pdf');
-        toast.success(`PDF audit report downloaded for ${auditResult.domain}!`);
-        return;
-      } catch (err) {
-        console.warn('Backend PDF blob fetch notice, trying direct URL download:', err);
-        try {
-          const downloadUrl = `${API}/digital-marketing/audit/${auditResult.auditId}/pdf/${fallbackFilename}`;
-          triggerDirectUrlDownload(downloadUrl, fallbackFilename);
-          toast.success(`Downloading PDF audit report for ${auditResult.domain}...`);
-          return;
-        } catch (e2) {
-          console.warn('Direct URL download notice, using client PDF generator:', e2);
-        }
-      }
-    }
-    
-    let container = null;
-    try {
-      const html2pdf = await loadHtml2Pdf();
-      container = document.createElement('div');
-      container.style.position = 'fixed';
-      container.style.left = '-9999px';
-      container.style.top = '0';
-      container.style.width = '750px';
-      container.style.padding = '20px';
-      container.style.background = '#0f172a';
-      container.style.color = '#f8fafc';
-      container.style.zIndex = '-9999';
-      container.innerHTML = `<div style="font-family: sans-serif; padding: 20px;"><h1>Vivam SEO Audit Report - ${auditResult.domain}</h1><p>Score: ${auditResult.score}/100 (${auditResult.gradeLabel})</p></div>`;
-      document.body.appendChild(container);
-
-      const opt = {
-        margin:       [0.3, 0.3, 0.3, 0.3],
-        filename:     fallbackFilename,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, logging: false, backgroundColor: '#0b0f19' },
-        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-      };
-
-      await html2pdf().set(opt).from(container).save();
-
-      setTimeout(() => {
-        if (container && document.body.contains(container)) {
-          document.body.removeChild(container);
-        }
-      }, 1000);
-
-      toast.success(`PDF audit report downloaded for ${auditResult.domain}!`);
-    } catch (err) {
-      if (container && document.body.contains(container)) {
-        document.body.removeChild(container);
-      }
-      console.warn('PDF export failed, opening interactive report:', err);
-      setIsReportModalOpen(true);
-    }
+    setIsReportModalOpen(true);
   };
 
   const handleDownloadReportFile = async () => {

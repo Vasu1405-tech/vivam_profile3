@@ -187,15 +187,7 @@ export default function AuditReportModal({ isOpen, onClose, auditData }) {
   };
 
   const handleViewPdf = () => {
-    const cleanDomain = (auditData.domain || 'report').replace(/[^a-zA-Z0-9_-]/g, '_');
-    const fallbackFilename = `Vivam-SEO-Audit-${cleanDomain}.pdf`;
-    if (auditData.auditId) {
-      const viewUrl = `${BACKEND_URL}/api/digital-marketing/audit/${auditData.auditId}/pdf/${fallbackFilename}?view=true`;
-      viewDocumentInNewTab(viewUrl);
-      toast.info('Opening official PDF report viewer...');
-    } else {
-      window.print();
-    }
+    window.print();
   };
 
   const handleDownloadPdf = async () => {
@@ -203,23 +195,17 @@ export default function AuditReportModal({ isOpen, onClose, auditData }) {
     const fallbackFilename = `Vivam-SEO-Audit-${cleanDomain}.pdf`;
     toast.info('Generating PDF report...');
 
-    if (auditData.auditId) {
+    if (auditData.auditId && !auditData.auditId.startsWith('audit-')) {
       try {
         const downloadUrl = `${BACKEND_URL}/api/digital-marketing/audit/${auditData.auditId}/pdf/${fallbackFilename}`;
         const res = await axios.get(downloadUrl, { responseType: 'blob' });
-        downloadFileFromResponse(res, fallbackFilename, 'application/pdf');
-        toast.success('Official PDF audit report downloaded successfully!');
-        return;
-      } catch (err) {
-        console.warn('Backend PDF blob fetch notice, trying direct URL download:', err);
-        try {
-          const downloadUrl = `${BACKEND_URL}/api/digital-marketing/audit/${auditData.auditId}/pdf/${fallbackFilename}`;
-          triggerDirectUrlDownload(downloadUrl, fallbackFilename);
-          toast.success('Downloading official PDF report...');
+        if (res.status === 200 && res.data && res.data.size > 100) {
+          downloadFileFromResponse(res, fallbackFilename, 'application/pdf');
+          toast.success('Official PDF audit report downloaded successfully!');
           return;
-        } catch (e2) {
-          console.warn('Direct URL download notice, using client PDF generator:', e2);
         }
+      } catch (err) {
+        console.warn('Backend PDF endpoint notice, fallback to client PDF generator:', err);
       }
     }
     
