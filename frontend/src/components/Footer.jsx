@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { Separator } from '@/components/ui/separator';
-import { Github, Linkedin, Twitter, Mail } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import SocialShareButtons from '@/components/ui/SocialShareButtons';
 
 const footerLinks = {
   Services: [
-    { label: 'Custom Software', href: '#service-custom-software' },
-    { label: 'Web Development', href: '#service-web-development' },
-    { label: 'Mobile Apps', href: '#service-mobile-apps' },
-    { label: 'Cloud Solutions', href: '#service-cloud-solutions' },
-    { label: 'AI & Automation', href: '#service-ai-automation' },
+    { label: 'Digital Marketing', href: '/digital-marketing-services' },
+    { label: 'Custom Software', href: '/#service-custom-software' },
+    { label: 'Web Development', href: '/#service-web-development' },
+    { label: 'Mobile Apps', href: '/#service-mobile-apps' },
+    { label: 'Cloud Solutions', href: '/#service-cloud-solutions' },
+    { label: 'AI & Automation', href: '/#service-ai-automation' },
   ],
   Company: [
     { label: 'About Us', href: '#about' },
@@ -24,13 +25,6 @@ const footerLinks = {
   ],
 };
 
-const socialLinks = [
-  { icon: Twitter, href: '#', label: 'Twitter' },
-  { icon: Linkedin, href: '#', label: 'LinkedIn' },
-  { icon: Github, href: '#', label: 'GitHub' },
-  { icon: Mail, href: 'mailto:contact@support.vivamsofttech.com', label: 'Email' },
-];
-
 export default function Footer() {
   const [activeModal, setActiveModal] = useState(null); // 'privacy' | 'terms' | null
 
@@ -41,27 +35,27 @@ export default function Footer() {
           <div className="grid md:grid-cols-5 gap-10">
             {/* Brand */}
             <div className="md:col-span-2">
-              <div className="flex items-center gap-2 mb-4">
+              <a href="/" className="flex items-center gap-2 mb-4">
                 <img src="/vivam-logo.png" alt="Vivam Logo" className="w-10 h-10 rounded-full object-cover" />
                 <span className="font-outfit font-bold text-xl tracking-tight text-foreground">
                   Vivam
                 </span>
-              </div>
+              </a>
               <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mb-6">
-                Transforming businesses with scalable software solutions. Enterprise-grade development for modern companies.
+                Transforming businesses with scalable software solutions & digital marketing. Enterprise-grade development for modern companies.
               </p>
-              <div className="flex gap-3">
-                {socialLinks.map((social) => (
-                  <a
-                    key={social.label}
-                    href={social.href}
-                    className="w-9 h-9 rounded-lg bg-muted/50 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                    data-testid={`footer-social-${social.label.toLowerCase()}`}
-                    aria-label={social.label}
-                  >
-                    <social.icon className="w-4 h-4" />
-                  </a>
-                ))}
+              
+              {/* Framer Social Share Buttons */}
+              <div className="space-y-2">
+                <p className="text-xs font-semibold text-foreground uppercase tracking-wider">Connect With Us</p>
+                <SocialShareButtons
+                  platforms={['twitter', 'linkedin', 'github', 'email', 'facebook', 'instagram', 'youtube']}
+                  iconStyle="minimal"
+                  size={44}
+                  borderRadius={16}
+                  gap={10}
+                  hoverEffect="scale"
+                />
               </div>
             </div>
 
@@ -75,6 +69,9 @@ export default function Footer() {
                       <a
                         href={link.href}
                         onClick={(e) => {
+                          if (link.href.startsWith('/')) {
+                            return; // allow normal anchor navigation for page routes
+                          }
                           e.preventDefault();
                           document.querySelector(link.href)?.scrollIntoView({ behavior: 'smooth' });
                         }}
@@ -111,6 +108,13 @@ export default function Footer() {
               >
                 Terms of Service
               </button>
+              <a
+                href="/admin"
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors outline-none"
+                data-testid="footer-admin"
+              >
+                Admin Panel
+              </a>
             </div>
           </div>
         </div>

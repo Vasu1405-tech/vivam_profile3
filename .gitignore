@@ -51,6 +51,7 @@ __pycache__/
 *pyc*
 venv/
 .venv/
+backend/scratch/
 
 # Development tools
 chainlit.md

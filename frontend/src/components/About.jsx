@@ -3,16 +3,22 @@ import { motion } from 'framer-motion';
 import { CheckCircle, Eye, Target } from 'lucide-react';
 
 const highlights = [
-  'Custom software development for enterprises',
-  'Cloud platforms and intelligent automation',
-  'Agile methodology with continuous delivery',
-  'Scalable architecture built for growth',
+  'Custom software development & enterprise web engineering',
+  'Data-driven digital marketing agency & SEO audit services',
+  'Industrial IT training workshops & hands-on tech masterclasses',
+  'Scalable cloud architecture & AI automation solutions',
 ];
+
 
 export default function About() {
   return (
-    <section id="about" className="section-padding" data-testid="about-section">
-      <div className="container-main grid md:grid-cols-2 gap-12 md:gap-20 items-center">
+    <section id="about" className="section-padding relative overflow-hidden" data-testid="about-section">
+      {/* Background design elements */}
+      <div className="absolute top-1/4 -left-40 w-96 h-96 bg-blue-500/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-10 -right-40 w-96 h-96 bg-violet-500/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute inset-0 bg-grid-mesh opacity-30 pointer-events-none" />
+
+      <div className="container-main relative z-10 grid md:grid-cols-2 gap-12 md:gap-20 items-center">
         <motion.div
           initial={{ opacity: 0, x: -40 }}
           whileInView={{ opacity: 1, x: 0 }}

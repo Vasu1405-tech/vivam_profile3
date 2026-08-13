@@ -12,8 +12,13 @@ const reasons = [
 
 export default function WhyChoose() {
   return (
-    <section id="why-choose" className="section-padding" data-testid="why-choose-section">
-      <div className="container-main">
+    <section id="why-choose" className="section-padding relative overflow-hidden" data-testid="why-choose-section">
+      {/* Background design elements */}
+      <div className="absolute top-10 right-10 w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[130px] pointer-events-none" />
+      <div className="absolute bottom-10 left-10 w-[400px] h-[400px] bg-amber-500/10 rounded-full blur-[130px] pointer-events-none" />
+      <div className="absolute inset-0 bg-grid-mesh opacity-20 pointer-events-none" />
+
+      <div className="container-main relative z-10">
         <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-center">
           <motion.div
             initial={{ opacity: 0, x: -40 }}

@@ -11,8 +11,12 @@ const stats = [
 
 export default function Highlights() {
   return (
-    <section className="py-16 md:py-20 relative" data-testid="highlights-section">
-      <div className="container-main">
+    <section className="py-16 md:py-20 relative overflow-hidden" data-testid="highlights-section">
+      {/* Background design elements */}
+      <div className="absolute inset-0 bg-dot-pattern opacity-40 pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[250px] bg-gradient-to-r from-blue-500/10 via-violet-500/10 to-indigo-500/10 blur-[100px] pointer-events-none rounded-full" />
+
+      <div className="container-main relative z-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
           {stats.map((stat, i) => (
             <motion.div

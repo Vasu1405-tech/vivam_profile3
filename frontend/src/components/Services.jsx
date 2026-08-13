@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Code2, Globe, Smartphone, Cloud, BrainCircuit, Building2, ArrowRight, CheckCircle, Layers, Settings2 } from 'lucide-react';
+import { Code2, Globe, Smartphone, Cloud, BrainCircuit, Building2, ArrowRight, CheckCircle, Layers, Settings2, TrendingUp } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -114,14 +114,38 @@ const services = [
       process: 'Requirements Engineering → System Architecture → Core Engineering → Load Testing → Enterprise Rollout'
     }
   },
+  {
+    icon: TrendingUp,
+    title: 'Digital Marketing & Growth',
+    slug: 'digital-marketing',
+    link: '/digital-marketing',
+    description: 'Data-driven SEO, Google & Meta Ads, Social Media growth, and conversion rate optimization to scale your business revenue.',
+    color: 'text-blue-500 bg-blue-500/10',
+    details: {
+      overview: 'Transform your online visibility into quantifiable revenue. We deliver full-funnel digital marketing strategies focused on ROI, lead generation, and customer acquisition.',
+      benefits: [
+        'Top Search Engine (SEO) rankings for high-intent terms',
+        'Cost-effective PPC & Social Media ad campaigns',
+        'High-converting landing page optimization & copy',
+        'Transparent GA4 analytics & ROI reporting dashboards'
+      ],
+      technologies: ['SEO', 'Google Ads', 'Meta Ads', 'GA4', 'HubSpot', 'SEMrush'],
+      process: 'Audit → Custom Strategy → Execution → Analytics & Scale'
+    }
+  }
 ];
 
 export default function Services() {
   const [selectedService, setSelectedService] = useState(null);
 
   return (
-    <section id="services" className="section-padding" data-testid="services-section">
-      <div className="container-main">
+    <section id="services" className="section-padding relative overflow-hidden" data-testid="services-section">
+      {/* Background design elements */}
+      <div className="absolute top-10 right-0 w-[500px] h-[500px] bg-violet-500/10 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-10 -left-20 w-[450px] h-[450px] bg-cyan-500/10 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute inset-0 bg-dot-pattern opacity-30 pointer-events-none" />
+
+      <div className="container-main relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -130,14 +154,15 @@ export default function Services() {
           className="text-center mb-16"
         >
           <p className="text-sm font-medium tracking-wider uppercase text-primary mb-4">
-            Our Services
+            Enterprise Services & Digital Growth Solutions
           </p>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground font-outfit">
-            What We Build
+            Custom Software Development & Digital Agency Services
           </h2>
           <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            End-to-end software development services tailored for modern enterprises
+            End-to-end custom software development, mobile app engineering, cloud consulting, and real-time SEO growth services tailored for modern enterprises.
           </p>
+
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">

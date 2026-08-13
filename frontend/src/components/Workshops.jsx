@@ -1,7 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GraduationCap, Users, Calendar, Presentation, Sparkles, ArrowRight, Laptop, Award, X, Maximize2 } from 'lucide-react';
+import axios from 'axios';
+import {
+  GraduationCap,
+  Users,
+  Presentation,
+  Sparkles,
+  ArrowRight,
+  Laptop,
+  Award,
+  X,
+  Maximize2
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
+const API = `${BACKEND_URL}/api`;
 
 const workshopCategories = [
   {
@@ -31,74 +45,51 @@ const workshopCategories = [
 ];
 
 const galleryImages = [
-  {
-    url: '/assets/events/pic-1.jpg',
-    caption: 'Expert Seminar on Career Growth',
-    size: 'md:col-span-2 md:row-span-2'
-  },
-  {
-    url: '/assets/events/pic-2.jpg',
-    caption: 'Technical Workshop Session',
-    size: 'md:col-span-1 md:row-span-1'
-  },
-  {
-    url: '/assets/events/pic-3.jpg',
-    caption: 'Student Interaction & Q&A',
-    size: 'md:col-span-1 md:row-span-2'
-  },
-  {
-    url: '/assets/events/pic-8.jpeg',
-    caption: 'Industry Insights Session',
-    size: 'md:col-span-1 md:row-span-1'
-  },
-  {
-    url: '/assets/events/pic-9.jpeg',
-    caption: 'Future Tech Trends Discussion',
-    size: 'md:col-span-2 md:row-span-1'
-  },
-  {
-    url: '/assets/events/pic-5.jpg',
-    caption: 'Skill Development Session',
-    size: 'md:col-span-1 md:row-span-1'
-  },
-  {
-    url: '/assets/events/pic-14.jpeg',
-    caption: 'Technical Q&A Round',
-    size: 'md:col-span-1 md:row-span-1'
-  },
-  {
-    url: '/assets/events/pic-13.jpeg',
-    caption: 'Career Roadmap Seminar',
-    size: 'md:col-span-2 md:row-span-2'
-  },
-  {
-    url: '/assets/events/pic-18.jpeg',
-    caption: 'Advanced Technology Overview',
-    size: 'md:col-span-2 md:row-span-1'
-  },
-  {
-    url: '/assets/events/pic-7.jpg',
-    caption: 'Workshop Graduation Ceremony',
-    size: 'md:col-span-1 md:row-span-1'
-  },
-  {
-    url: '/assets/events/pic-17.jpeg',
-    caption: 'Corporate Culture Training',
-    size: 'md:col-span-1 md:row-span-1'
-  },
-  {
-    url: '/assets/events/pic-20.jpeg',
-    caption: 'Seminar Closing Ceremony',
-    size: 'md:col-span-4 md:row-span-2'
-  }
+  { url: 'https://res.cloudinary.com/fn8kv7ru/image/upload/v1786472885/vivam_events/event_pic-1.jpg', caption: 'Expert Seminar on Career Growth', size: 'md:col-span-2 md:row-span-2' },
+  { url: 'https://res.cloudinary.com/fn8kv7ru/image/upload/v1786472893/vivam_events/event_pic-2.jpg', caption: 'Technical Workshop Session', size: 'md:col-span-1 md:row-span-1' },
+  { url: 'https://res.cloudinary.com/fn8kv7ru/image/upload/v1786472895/vivam_events/event_pic-3.jpg', caption: 'Student Interaction & Q&A', size: 'md:col-span-1 md:row-span-2' },
+  { url: 'https://res.cloudinary.com/fn8kv7ru/image/upload/v1786472895/vivam_events/event_pic-5.jpg', caption: 'Skill Development Session', size: 'md:col-span-1 md:row-span-1' },
+  { url: 'https://res.cloudinary.com/fn8kv7ru/image/upload/v1786472896/vivam_events/event_pic-7.jpg', caption: 'Workshop Graduation Ceremony', size: 'md:col-span-1 md:row-span-1' },
+  { url: 'https://res.cloudinary.com/fn8kv7ru/image/upload/v1786472898/vivam_events/event_pic-8.jpg', caption: 'Industry Insights Session', size: 'md:col-span-1 md:row-span-1' },
+  { url: 'https://res.cloudinary.com/fn8kv7ru/image/upload/v1786472899/vivam_events/event_pic-9.jpg', caption: 'Future Tech Trends Discussion', size: 'md:col-span-2 md:row-span-1' },
+  { url: 'https://res.cloudinary.com/fn8kv7ru/image/upload/v1786472889/vivam_events/event_pic-13.jpg', caption: 'Career Roadmap Seminar', size: 'md:col-span-2 md:row-span-2' },
+  { url: 'https://res.cloudinary.com/fn8kv7ru/image/upload/v1786472890/vivam_events/event_pic-14.jpg', caption: 'Technical Q&A Round', size: 'md:col-span-1 md:row-span-1' },
+  { url: 'https://res.cloudinary.com/fn8kv7ru/image/upload/v1786472891/vivam_events/event_pic-17.jpg', caption: 'Corporate Culture Training', size: 'md:col-span-1 md:row-span-1' },
+  { url: 'https://res.cloudinary.com/fn8kv7ru/image/upload/v1786472892/vivam_events/event_pic-18.jpg', caption: 'Advanced Technology Overview', size: 'md:col-span-2 md:row-span-1' },
+  { url: 'https://res.cloudinary.com/fn8kv7ru/image/upload/v1786472893/vivam_events/event_pic-20.jpg', caption: 'Seminar Closing Ceremony', size: 'md:col-span-2 md:row-span-1' }
 ];
 
 export default function Workshops() {
   const [selectedImg, setSelectedImg] = useState(null);
+  const [highlights, setHighlights] = useState(galleryImages);
+
+  useEffect(() => {
+    const fetchHighlights = async () => {
+      try {
+        const res = await axios.get(`${API}/events/highlights`);
+        if (res.data && Array.isArray(res.data) && res.data.length > 0) {
+          const mapped = res.data.map((item) => ({
+            url: (item.image.startsWith('http') || item.image.startsWith('/assets/')) ? item.image : `${BACKEND_URL}${item.image}`,
+            caption: item.title || item.caption,
+            size: item.size || 'md:col-span-1 md:row-span-1'
+          }));
+          setHighlights(mapped);
+        }
+      } catch (err) {
+        console.error('Failed to fetch event highlights:', err);
+      }
+    };
+    fetchHighlights();
+  }, []);
 
   return (
-    <section id="workshops" className="section-padding overflow-hidden">
-      <div className="container-main">
+    <section id="workshops" className="section-padding relative overflow-hidden bg-background">
+      {/* Background design elements */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-emerald-500/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-10 right-0 w-[400px] h-[400px] bg-blue-500/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute inset-0 bg-grid-mesh opacity-25 pointer-events-none" />
+
+      <div className="container-main relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -115,7 +106,7 @@ export default function Workshops() {
             Workshops & IT Training
           </h2>
           <p className="mt-4 text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
-            We bridge the gap between academic learning and industry requirements through expert-led sessions and hands-on technical training.
+            We bridge the gap between academic learning and industry requirements through expert-led sessions, hands-on technical training, and interactive seminars.
           </p>
         </motion.div>
 
@@ -137,7 +128,7 @@ export default function Workshops() {
               <p className="text-sm text-muted-foreground leading-relaxed mb-6">{item.description}</p>
 
               <ul className="space-y-3 mb-8">
-                {item.features.map(feature => (
+                {item.features.map((feature) => (
                   <li key={feature} className="flex items-center gap-2 text-sm text-foreground/80">
                     <Award className="w-3.5 h-3.5 text-primary" />
                     {feature}
@@ -147,7 +138,7 @@ export default function Workshops() {
 
               <Button
                 variant="ghost"
-                className="group p-0 h-auto hover:bg-transparent text-primary font-semibold"
+                className="group p-0 h-auto hover:bg-transparent text-primary font-semibold text-sm"
                 onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
               >
                 Inquire Now <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -156,31 +147,41 @@ export default function Workshops() {
           ))}
         </div>
 
-        {/* Gallery Section */}
+        {/* ==================================================== */}
+        {/* EVENT HIGHLIGHTS & GALLERY SECTION */}
+        {/* ==================================================== */}
         <div className="mt-24">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4"
+            className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6 border-b border-border/50 pb-6"
           >
             <div>
-              <h3 className="text-2xl font-bold font-outfit text-foreground">Event Highlights</h3>
-              <p className="text-muted-foreground mt-1">Sneak peek into our recent sessions and workshops in 2026</p>
-            </div>
-            <div className="flex items-center gap-2 text-sm font-medium text-primary cursor-pointer hover:underline">
-              View All Moments <ArrowRight className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-widest mb-1">
+                <Laptop className="w-4 h-4 text-primary" /> Learning & Seminars
+              </div>
+              <h3 className="text-2xl md:text-3xl font-bold font-outfit text-foreground">Event Highlights</h3>
+              <p className="text-muted-foreground mt-1 text-sm">
+                Look back at our recent workshop sessions and tech seminar moments
+              </p>
             </div>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[200px]">
-            {galleryImages.map((img, i) => (
+          {/* PAST SESSION GALLERY VIEW */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[200px] grid-flow-dense"
+          >
+            {highlights.map((img, i) => (
               <motion.div
                 key={i}
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
+                transition={{ delay: i * 0.05 }}
                 className={`relative group overflow-hidden rounded-2xl cursor-pointer ${img.size}`}
                 onClick={() => setSelectedImg(img)}
               >
@@ -188,6 +189,12 @@ export default function Workshops() {
                   src={img.url}
                   alt={img.caption}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    if (e.currentTarget.parentElement) {
+                      e.currentTarget.parentElement.style.display = 'none';
+                    }
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
                   <div className="flex items-center justify-between">
@@ -199,25 +206,11 @@ export default function Workshops() {
                 </div>
               </motion.div>
             ))}
-
-            {/* CTA Card in Gallery */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="md:col-span-1 md:row-span-1 glass-card rounded-2xl p-6 flex flex-col items-center justify-center text-center border-dashed border-2 border-primary/20 hover:border-primary/50 transition-colors"
-            >
-              <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-3">
-                <Laptop className="w-5 h-5" />
-              </div>
-              <p className="text-xs font-semibold text-primary uppercase tracking-widest mb-1">Upcoming</p>
-              <p className="text-sm font-bold text-foreground leading-tight px-2">AI Mastery Workshop 2026</p>
-            </motion.div>
-          </div>
+          </motion.div>
         </div>
       </div>
 
-      {/* Lightbox Modal */}
+      {/* Lightbox Gallery Modal */}
       <AnimatePresence>
         {selectedImg && (
           <motion.div

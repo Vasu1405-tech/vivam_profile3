@@ -13,8 +13,13 @@ const industries = [
 
 export default function Industries() {
   return (
-    <section id="industries" className="section-padding" data-testid="industries-section">
-      <div className="container-main">
+    <section id="industries" className="section-padding relative overflow-hidden" data-testid="industries-section">
+      {/* Background design elements */}
+      <div className="absolute top-10 right-10 w-[450px] h-[450px] bg-emerald-500/10 rounded-full blur-[130px] pointer-events-none" />
+      <div className="absolute bottom-10 left-10 w-[450px] h-[450px] bg-purple-500/10 rounded-full blur-[130px] pointer-events-none" />
+      <div className="absolute inset-0 bg-dot-pattern opacity-30 pointer-events-none" />
+
+      <div className="container-main relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

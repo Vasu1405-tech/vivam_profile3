@@ -2,8 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, Quote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import axios from 'axios';
 
-const testimonials = [
+const staticTestimonials = [
   {
     quote: 'Vivam delivered our enterprise platform with excellent performance and scalability. Their team understood our complex requirements from day one.',
     name: 'Rajesh Kumar',
@@ -26,14 +27,36 @@ const testimonials = [
 
 export default function Testimonials() {
   const [current, setCurrent] = useState(0);
+  const [allTestimonials, setAllTestimonials] = useState(staticTestimonials);
+
+  useEffect(() => {
+    const fetchCustomTestimonials = async () => {
+      try {
+        const backendUrl = (process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001').replace(/\/$/, '');
+        const res = await axios.get(`${backendUrl}/api/testimonials`);
+        if (res.data && res.data.length > 0) {
+          const mapped = res.data.map((t) => ({
+            quote: t.content,
+            name: t.name,
+            role: `${t.role}${t.company ? ` at ${t.company}` : ''}`,
+            image: t.avatar || 'https://images.unsplash.com/photo-1655249481446-25d575f1c054?w=300&h=300&fit=crop'
+          }));
+          setAllTestimonials([...mapped, ...staticTestimonials]);
+        }
+      } catch (err) {
+        console.error('Failed to fetch testimonials:', err);
+      }
+    };
+    fetchCustomTestimonials();
+  }, []);
 
   const next = useCallback(() => {
-    setCurrent(prev => (prev + 1) % testimonials.length);
-  }, []);
+    setCurrent(prev => (prev + 1) % allTestimonials.length);
+  }, [allTestimonials.length]);
 
   const prev = useCallback(() => {
-    setCurrent(prev => (prev - 1 + testimonials.length) % testimonials.length);
-  }, []);
+    setCurrent(prev => (prev - 1 + allTestimonials.length) % allTestimonials.length);
+  }, [allTestimonials.length]);
 
   useEffect(() => {
     const timer = setInterval(next, 6000);
@@ -71,21 +94,21 @@ export default function Testimonials() {
                 transition={{ duration: 0.4 }}
               >
                 <p className="text-lg md:text-xl text-foreground leading-relaxed mb-8 font-outfit" data-testid="testimonial-quote">
-                  "{testimonials[current].quote}"
+                  "{allTestimonials[current]?.quote}"
                 </p>
                 <div className="flex items-center justify-center gap-4">
                   <img
-                    src={testimonials[current].image}
-                    alt={testimonials[current].name}
+                    src={allTestimonials[current]?.image}
+                    alt={allTestimonials[current]?.name}
                     className="w-12 h-12 rounded-full object-cover border-2 border-primary/30"
                     data-testid="testimonial-image"
                   />
                   <div className="text-left">
                     <p className="text-sm font-semibold text-foreground" data-testid="testimonial-name">
-                      {testimonials[current].name}
+                      {allTestimonials[current]?.name}
                     </p>
                     <p className="text-xs text-muted-foreground" data-testid="testimonial-role">
-                      {testimonials[current].role}
+                      {allTestimonials[current]?.role}
                     </p>
                   </div>
                 </div>
@@ -105,7 +128,7 @@ export default function Testimonials() {
             </Button>
 
             <div className="flex gap-2">
-              {testimonials.map((_, i) => (
+              {allTestimonials.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrent(i)}

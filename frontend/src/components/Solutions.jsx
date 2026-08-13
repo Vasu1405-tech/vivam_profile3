@@ -27,8 +27,13 @@ const solutions = [
 
 export default function Solutions() {
   return (
-    <section id="solutions" className="section-padding" data-testid="solutions-section">
-      <div className="container-main">
+    <section id="solutions" className="section-padding relative overflow-hidden" data-testid="solutions-section">
+      {/* Background design elements */}
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[400px] h-[400px] bg-indigo-500/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[400px] h-[400px] bg-sky-500/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute inset-0 bg-grid-mesh opacity-20 pointer-events-none" />
+
+      <div className="container-main relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

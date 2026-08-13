@@ -55,8 +55,13 @@ const allTechs = techCategories.flatMap(c => c.items);
 
 export default function TechStack() {
   return (
-    <section id="techstack" className="section-padding overflow-hidden" data-testid="techstack-section">
-      <div className="container-main">
+    <section id="techstack" className="section-padding relative overflow-hidden" data-testid="techstack-section">
+      {/* Background design elements */}
+      <div className="absolute top-10 -left-20 w-[450px] h-[450px] bg-blue-600/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute bottom-10 right-0 w-[450px] h-[450px] bg-violet-600/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute inset-0 bg-dot-pattern opacity-30 pointer-events-none" />
+
+      <div className="container-main relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

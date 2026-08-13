@@ -28,13 +28,27 @@ const faqs = [
   {
     question: "What is your pricing model?",
     answer: "We offer flexible pricing models including Fixed Price for well-defined projects and Time & Materials for more dynamic requirements. We'll recommend the best approach after understanding your needs."
+  },
+  {
+    question: "Where is Vivam Software Services located?",
+    answer: "Our headquarters and primary software development center are located in Kakinada, Andhra Pradesh, India, serving clients across Andhra Pradesh, Telangana, India, and global markets."
+  },
+
+  {
+    question: "How do your real-time SEO & digital marketing audits work?",
+    answer: "Our real-time SEO audit engine scans your target website URL against 50+ live performance, security, and ranking signals to instantly generate downloadable PDF & HTML growth reports."
   }
 ];
 
+
 export default function FAQ() {
   return (
-    <section id="faq" className="section-padding bg-muted/30">
-      <div className="container-main">
+    <section id="faq" className="section-padding bg-muted/30 relative overflow-hidden">
+      {/* Background design elements */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[350px] bg-primary/10 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute inset-0 bg-dot-pattern opacity-25 pointer-events-none" />
+
+      <div className="container-main relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

@@ -5,8 +5,12 @@ import { ArrowRight } from 'lucide-react';
 
 export default function CTA() {
   return (
-    <section className="section-padding" data-testid="cta-section">
-      <div className="container-main">
+    <section className="section-padding relative overflow-hidden" data-testid="cta-section">
+      {/* Background design glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-indigo-500/20 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute inset-0 bg-dot-pattern opacity-20 pointer-events-none" />
+
+      <div className="container-main relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}

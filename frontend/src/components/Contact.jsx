@@ -8,7 +8,8 @@ import { MapPin, Mail, Phone, Send, CheckCircle, Loader2 } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'sonner';
 
-const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+const BACKEND_URL = (process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001').replace(/\/$/, '');
+const API = `${BACKEND_URL}/api`;
 
 export default function Contact() {
   const [form, setForm] = useState({
@@ -39,8 +40,13 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="section-padding" data-testid="contact-section">
-      <div className="container-main">
+    <section id="contact" className="section-padding relative overflow-hidden" data-testid="contact-section">
+      {/* Background design elements */}
+      <div className="absolute top-10 -left-40 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-10 -right-40 w-[500px] h-[500px] bg-violet-500/10 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute inset-0 bg-grid-mesh opacity-25 pointer-events-none" />
+
+      <div className="container-main relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

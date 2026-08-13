@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, X, CheckCircle, TrendingUp, Users, Clock, Briefcase, Sparkles, UsersRound } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
+import axios from 'axios';
 
 const projects = [
   {
@@ -141,10 +142,55 @@ const projects = [
 
 export default function Portfolio() {
   const [selectedProject, setSelectedProject] = useState(null);
+  const [customProjects, setCustomProjects] = useState([]);
+
+  useEffect(() => {
+    const fetchCustomProjects = async () => {
+      try {
+        const backendUrl = (process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001').replace(/\/$/, '');
+        const res = await axios.get(`${backendUrl}/api/portfolio`);
+        if (res.data && res.data.length > 0) {
+          const mapped = res.data.map((p) => ({
+            title: p.title,
+            description: p.description,
+            tech: p.tags && p.tags.length > 0 ? p.tags : [p.category || 'Software Development'],
+            image: p.image || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop',
+            caseStudy: {
+              client: p.category || 'Vivam Showcase Client',
+              duration: 'Custom Delivery',
+              team: 'Vivam Tech Team',
+              challenge: p.description,
+              solution: `Custom solution built using ${p.tags ? p.tags.join(', ') : 'modern tech stack'}.`,
+              features: [
+                'Scalable production architecture',
+                'Optimized user interface & responsive design',
+                'Enterprise security & performance'
+              ],
+              results: [
+                { metric: '100%', label: 'Delivery Success' },
+                { metric: '24/7', label: 'Support & Uptime' }
+              ]
+            }
+          }));
+          setCustomProjects(mapped);
+        }
+      } catch (err) {
+        console.error('Failed to fetch portfolio projects:', err);
+      }
+    };
+    fetchCustomProjects();
+  }, []);
+
+  const allProjects = [...customProjects, ...projects];
 
   return (
-    <section id="portfolio" className="section-padding" data-testid="portfolio-section">
-      <div className="container-main">
+    <section id="portfolio" className="section-padding relative overflow-hidden" data-testid="portfolio-section">
+      {/* Background design elements */}
+      <div className="absolute top-20 -left-30 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-20 -right-30 w-[500px] h-[500px] bg-violet-500/10 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute inset-0 bg-grid-mesh opacity-25 pointer-events-none" />
+
+      <div className="container-main relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -164,7 +210,7 @@ export default function Portfolio() {
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {projects.map((project, i) => (
+          {allProjects.map((project, i) => (
             <motion.div
               key={project.title}
               initial={{ opacity: 0, y: 30 }}
