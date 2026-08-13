@@ -203,12 +203,67 @@ const performRealTimeLiveAudit = async (targetUrl) => {
     });
   }
 
-  const recommendations = [
-    `Optimize website response latency (Currently measured at ${responseTimeMs}ms).`,
-    realTitle ? `Maintain current title tag ("${realTitle.substring(0, 40)}...") while refining primary keywords.` : 'Add a keyword-optimized page title tag.',
-    metaDesc ? 'Refine meta description call-to-action for higher click-through rates.' : 'Add a compelling meta description for Google Search snippets.',
-    hasSchema ? 'Expand JSON-LD LocalBusiness & Product schema for rich search snippets.' : 'Implement LocalBusiness & Organization JSON-LD schema markup.'
+  const suggestedMetaDescription = metaDesc && metaDesc.length >= 40
+    ? metaDesc
+    : `Experience high-performance digital services and solutions from ${cleanDomain}. High-converting user experience, fast page load speeds, and verified search visibility.`;
+
+  const suggestedH1 = h1Elements.length > 0
+    ? h1Elements[0].textContent.trim()
+    : `Accelerate Digital Growth & Conversions for ${cleanDomain.charAt(0).toUpperCase() + cleanDomain.slice(1)}`;
+
+  const suggestedCtaText = `Get Free Growth Strategy Consultation for ${cleanDomain}`;
+
+  const growthRoadmap = [
+    {
+      week: 'Week 1',
+      focus: 'Technical SEO & Security Foundation',
+      tasks: [
+        `Harden HTTPS security response headers for ${cleanDomain}`,
+        realTitle ? `Refine search title tag ("${realTitle.substring(0, 40)}...")` : 'Add descriptive 50-60 character <title> tag',
+        metaDesc ? 'Optimize meta description snippet length' : 'Create compelling 120-155 character meta description'
+      ]
+    },
+    {
+      week: 'Week 2',
+      focus: 'Performance & Speed Optimization',
+      tasks: [
+        `Optimize network response latency (Currently measured at ${responseTimeMs}ms)`,
+        'Compress content images to WebP format',
+        'Enable Gzip/Brotli CDN edge caching'
+      ]
+    },
+    {
+      week: 'Week 3',
+      focus: 'Content Depth & Structured Data',
+      tasks: [
+        `${altCoveragePct}% ALT coverage - add missing image ALT attributes`,
+        'Implement JSON-LD Organization & LocalBusiness schema markup',
+        'Expand core landing page copy to 600+ words'
+      ]
+    },
+    {
+      week: 'Week 4',
+      focus: 'CRO & Lead Conversion Funnel',
+      tasks: [
+        'Deploy Google Analytics GA4 & conversion tracking pixels',
+        'Place sticky call-to-action button above mobile fold',
+        'Integrate direct lead capture form and WhatsApp click trigger'
+      ]
+    }
   ];
+
+  const recommendationsObj = {
+    suggestedMetaDescription,
+    suggestedH1,
+    suggestedCtaText,
+    growthRoadmap,
+    list: [
+      `Optimize website response latency (Currently measured at ${responseTimeMs}ms).`,
+      realTitle ? `Maintain current title tag ("${realTitle.substring(0, 40)}...") while refining primary keywords.` : 'Add a keyword-optimized page title tag.',
+      metaDesc ? 'Refine meta description call-to-action for higher click-through rates.' : 'Add a compelling meta description for Google Search snippets.',
+      hasSchema ? 'Expand JSON-LD LocalBusiness & Product schema for rich search snippets.' : 'Implement LocalBusiness & Organization JSON-LD schema markup.'
+    ]
+  };
 
   return {
     success: true,
@@ -241,7 +296,7 @@ const performRealTimeLiveAudit = async (targetUrl) => {
       { name: 'Schema Markup', status: hasSchema ? 'PASS' : 'RECOMMEND', detail: hasSchema ? 'Structured JSON-LD schema detected.' : 'Structured JSON-LD schema recommended.' }
     ],
     issues,
-    recommendations,
+    recommendations: recommendationsObj,
     aiInsights: {
       positioning: `Vivam Real-Time AI Crawling Engine analyzed ${cleanDomain} (Title: "${realTitle || 'N/A'}", Response: ${responseTimeMs}ms).`,
       priorityAction: issues.length > 0 ? issues[0].recommendation : 'Implement WebP image compression and JSON-LD schema markup for maximum growth.',
