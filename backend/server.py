@@ -540,7 +540,12 @@ async def generate_ai_recommendations_and_roadmap(title: str, meta_desc: str, do
 
 
 @api_router.post("/digital-marketing/audit")
+@api_router.post("/digital-marketing/audit/")
 @api_router.post("/audit-website")
+@app.post("/digital-marketing/audit")
+@app.post("/digital-marketing/audit/")
+@app.post("/api/digital-marketing/audit")
+@app.post("/api/digital-marketing/audit/")
 async def run_digital_marketing_audit(req: AuditRequest, request: Request):
     client_ip = request.client.host if request.client else "127.0.0.1"
     check_rate_limit(client_ip)

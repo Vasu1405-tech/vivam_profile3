@@ -93,7 +93,7 @@ const AntigravityInner = ({
     let destX = (m.x * v.width) / 2;
     let destY = (m.y * v.height) / 2;
 
-    const time = state.clock.elapsedTime ?? (performance.now() * 0.001);
+    const time = performance.now() * 0.001;
 
     if (autoAnimate && Date.now() - lastMouseMoveTime.current > 1500) {
       destX = Math.sin(time * 0.6) * (v.width / 3);
