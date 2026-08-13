@@ -387,12 +387,15 @@ export default function AuditReportModal({ isOpen, onClose, auditData }) {
             <div className="space-y-3">
               <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground">Category Performance Breakdown</h3>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {Object.entries(auditData.categories || {}).map(([catKey, catVal]) => (
-                  <div key={catKey} className="p-4 rounded-xl bg-background/80 border border-border text-center space-y-1">
-                    <span className="text-xs capitalize font-semibold text-muted-foreground">{catKey} Score</span>
-                    <p className="text-2xl font-extrabold font-outfit text-foreground">{catVal}/100</p>
-                  </div>
-                ))}
+                {Object.entries(auditData.categories || {}).map(([catKey, catVal]) => {
+                  const catScore = typeof catVal === 'object' && catVal !== null ? (catVal.score ?? 80) : (typeof catVal === 'number' ? catVal : 80);
+                  return (
+                    <div key={catKey} className="p-4 rounded-xl bg-background/80 border border-border text-center space-y-1">
+                      <span className="text-xs capitalize font-semibold text-muted-foreground">{catKey} Score</span>
+                      <p className="text-2xl font-extrabold font-outfit text-foreground">{catScore}/100</p>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 

@@ -64,12 +64,14 @@ const generateClientSideAudit = (targetUrl) => {
     gradeLabel: baseScore >= 90 ? 'Grade A - Excellent' : baseScore >= 80 ? 'Grade B+ - Strong' : 'Grade B - Solid',
     isCached: false,
     categories: {
-      seo: { score: Math.min(100, baseScore + 4), status: 'pass', label: 'Search Engine Optimization' },
-      performance: { score: Math.max(60, baseScore - 6), status: 'warning', label: 'Page Speed & Load Time' },
-      mobile: { score: 95, status: 'pass', label: 'Mobile Viewport Readiness' },
-      security: { score: 100, status: 'pass', label: 'HTTPS & SSL Security' },
-      content: { score: baseScore, status: 'pass', label: 'Content Depth & ALT Coverage' },
-      cro: { score: Math.max(65, baseScore - 8), status: 'warning', label: 'Conversion Rate Optimization' }
+      seo: Math.min(100, baseScore + 4),
+      performance: Math.max(60, baseScore - 6),
+      mobile: 95,
+      security: 100,
+      content: baseScore,
+      cro: Math.max(65, baseScore - 8),
+      accessibility: Math.min(100, baseScore + 2),
+      speed: Math.max(60, baseScore - 4)
     },
     metrics: [
       { name: 'SSL Security', status: 'PASS', detail: 'HTTPS Encryption active with valid TLS certificate.' },
@@ -576,12 +578,13 @@ export default function InteractiveAuditCalculator({ onClaimAudit }) {
                     <h5 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">8-Pillar Category Performance Breakdown</h5>
                     <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-3">
                       {Object.entries(auditResult.categories || {}).map(([catKey, catVal]) => {
-                        const statusTag = catVal >= 85 ? 'Excellent' : catVal >= 70 ? 'Good' : 'Needs Improvement';
+                        const catScore = typeof catVal === 'object' && catVal !== null ? (catVal.score ?? 80) : (typeof catVal === 'number' ? catVal : 80);
+                        const statusTag = catScore >= 85 ? 'Excellent' : catScore >= 70 ? 'Good' : 'Needs Improvement';
                         return (
                           <div key={catKey} className="p-3.5 rounded-2xl bg-card border border-border/50 text-center space-y-1">
                             <span className="text-[10px] capitalize font-bold text-muted-foreground block truncate">{catKey}</span>
-                            <p className="text-xl font-black font-outfit text-primary">{catVal}/100</p>
-                            <span className={`text-[9px] font-semibold block truncate ${catVal >= 85 ? 'text-emerald-400' : catVal >= 70 ? 'text-blue-400' : 'text-amber-400'}`}>
+                            <p className="text-xl font-black font-outfit text-primary">{catScore}/100</p>
+                            <span className={`text-[9px] font-semibold block truncate ${catScore >= 85 ? 'text-emerald-400' : catScore >= 70 ? 'text-blue-400' : 'text-amber-400'}`}>
                               {statusTag}
                             </span>
                           </div>

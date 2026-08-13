@@ -184,7 +184,7 @@ export default function Antigravity(props) {
       <Canvas
         camera={{ position: [0, 0, 50], fov: 35 }}
         style={{ width: '100%', height: '100%', display: 'block' }}
-        gl={{ alpha: true, antialias: true }}
+        gl={{ alpha: true, antialias: true, powerPreference: 'high-performance', preserveDrawingBuffer: true, failIfMajorPerformanceCaveat: false }}
       >
         <AntigravityInner {...props} />
       </Canvas>
