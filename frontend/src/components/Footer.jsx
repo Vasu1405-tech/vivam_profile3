@@ -108,13 +108,6 @@ export default function Footer() {
               >
                 Terms of Service
               </button>
-              <a
-                href="/admin"
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors outline-none"
-                data-testid="footer-admin"
-              >
-                Admin Panel
-              </a>
             </div>
           </div>
         </div>
