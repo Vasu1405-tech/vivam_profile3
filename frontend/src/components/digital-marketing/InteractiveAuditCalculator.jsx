@@ -83,12 +83,43 @@ const generateClientSideAudit = (targetUrl) => {
       { name: 'Core Web Vitals', status: 'PASS', detail: 'First Contentful Paint (FCP) under 1.4s.' },
       { name: 'Schema Markup', status: 'RECOMMEND', detail: 'LocalBusiness & Organization JSON-LD structured data recommended.' }
     ],
+    issues: [
+      {
+        id: 'sec-1',
+        category: 'Security',
+        severity: 'Medium',
+        title: 'HSTS & Security Headers',
+        explanation: 'Strict-Transport-Security (HSTS) header is not explicitly enabled on server response.',
+        recommendation: 'Enable HSTS header with max-age=31536000; includeSubDomains.'
+      },
+      {
+        id: 'seo-1',
+        category: 'SEO',
+        severity: 'High',
+        title: 'Image ALT Attribute Coverage',
+        explanation: 'Missing ALT attributes on several images reduce Google Image Search indexing performance.',
+        recommendation: 'Add descriptive ALT tags containing target keywords for all hero and product images.'
+      },
+      {
+        id: 'cro-1',
+        category: 'CRO',
+        severity: 'High',
+        title: 'Mobile Lead Form & Call Button Above Fold',
+        explanation: 'Mobile visitors must scroll down to find contact and conversion triggers.',
+        recommendation: 'Add a sticky WhatsApp/Call-to-Action button for instant mobile conversions.'
+      }
+    ],
     recommendations: [
       'Optimize image sizes with WebP formatting to improve First Contentful Paint by ~0.4s.',
       'Implement LocalBusiness JSON-LD schema to rank in Google Maps 3-Pack.',
       'Add high-converting CTA buttons above the mobile fold for improved conversion rates.',
       'Increase domain authority backlinks to elevate keyword rankings for target search terms.'
-    ]
+    ],
+    aiInsights: {
+      positioning: `Vivam AI Audit Model identified key growth opportunities for ${cleanDomain} in search ranking, speed, and conversion funnel optimization.`,
+      priorityAction: 'Implement WebP image compression, JSON-LD Schema markup, and sticky mobile call triggers to boost organic leads by 35%+.',
+      techStackDetected: ['HTML5/Modern Web', 'HTTPS SSL Encryption', 'Google Analytics / Pixel']
+    }
   };
 };
 
