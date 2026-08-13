@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { X, Printer, Share2, Copy, Check, Sparkles, ShieldCheck, Download, Eye } from 'lucide-react';
+import { X, Printer, Share2, Copy, Check, Sparkles, ShieldCheck, Download, Eye, ArrowLeft } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { downloadFileFromResponse, downloadBlob, triggerDirectUrlDownload, viewDocumentInNewTab } from '../../utils/fileDownload';
@@ -292,10 +292,15 @@ export default function AuditReportModal({ isOpen, onClose, auditData }) {
           className="relative w-full max-w-4xl bg-card border border-border rounded-3xl shadow-2xl overflow-hidden my-8 print:shadow-none print:border-none print:my-0 print:bg-white"
         >
           {/* Header Action Bar */}
-          <div className="sticky top-0 z-30 p-4 sm:p-6 bg-card/95 backdrop-blur-md border-b border-border flex items-center justify-between print:hidden">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-emerald-400" />
-              <span className="text-xs font-bold uppercase tracking-wider text-foreground">Official Audit Report</span>
+          <div className="sticky top-0 z-30 p-4 sm:p-6 bg-card/95 backdrop-blur-md border-b border-border flex items-center justify-between gap-4 print:hidden">
+            <div className="flex items-center gap-3">
+              <Button onClick={onClose} variant="outline" size="sm" className="rounded-full text-xs font-bold border-primary/40 text-primary hover:bg-primary/10">
+                <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Calculator
+              </Button>
+              <div className="hidden sm:flex items-center gap-2 border-l border-border/60 pl-3">
+                <Sparkles className="w-4 h-4 text-emerald-400" />
+                <span className="text-xs font-bold uppercase tracking-wider text-foreground">Official Audit Report</span>
+              </div>
             </div>
 
             <div className="flex flex-wrap items-center gap-2">

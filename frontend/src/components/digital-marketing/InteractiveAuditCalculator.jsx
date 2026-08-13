@@ -23,6 +23,7 @@ import {
   CheckCircle2,
   Info,
   Eye,
+  ArrowLeft,
   RefreshCw
 } from 'lucide-react';
 import axios from 'axios';
@@ -635,6 +636,27 @@ export default function InteractiveAuditCalculator({ onClaimAudit }) {
                   exit={{ opacity: 0, scale: 0.96 }}
                   className="p-6 md:p-8 rounded-3xl bg-background/60 border border-primary/30 space-y-8 pt-6"
                 >
+                  {/* Dashboard Header Bar & Back Button */}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-border/40">
+                    <Button
+                      onClick={() => setAuditResult(null)}
+                      variant="outline"
+                      size="sm"
+                      className="rounded-full text-xs font-bold border-primary/40 text-primary hover:bg-primary/10"
+                    >
+                      <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Search / Run New Audit
+                    </Button>
+
+                    <div className="flex items-center gap-2">
+                      <Button onClick={handleViewPdfReport} variant="outline" size="sm" className="rounded-full text-xs font-bold border-blue-500/40 text-blue-400 hover:bg-blue-500/10">
+                        <Eye className="w-3.5 h-3.5 mr-1" /> View Full Report
+                      </Button>
+                      <Button onClick={handleDownloadPdfReport} className="rounded-full bg-gradient-to-r from-blue-600 to-violet-600 text-white text-xs font-bold shadow-md hover:from-blue-500 hover:to-violet-500" size="sm">
+                        <Download className="w-3.5 h-3.5 mr-1" /> Download PDF
+                      </Button>
+                    </div>
+                  </div>
+
                   {/* Top Domain & Score Header */}
                   <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-6 border-b border-border/40">
                     <div>
