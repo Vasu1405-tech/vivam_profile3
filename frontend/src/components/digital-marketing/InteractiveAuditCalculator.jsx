@@ -58,20 +58,19 @@ const performRealTimeLiveAudit = async (targetUrl) => {
   let responseTimeMs = 350;
   let isSsl = normalized.startsWith('https://');
 
-  // Multi-proxy CORS fetcher for maximum reliability on live sites
-  const proxies = [
-    (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-    (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-    (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`
+  // Reliable CORS proxy endpoints with clean Promise timeout
+  const proxyUrls = [
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(normalized)}`,
+    `https://thingproxy.freeboard.io/fetch/${normalized}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(normalized)}`
   ];
 
-  for (const getProxyUrl of proxies) {
+  for (const proxyUrl of proxyUrls) {
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 4000);
-      const res = await fetch(getProxyUrl(normalized), { signal: controller.signal });
-      clearTimeout(timeoutId);
-      if (res.ok) {
+      const fetchPromise = fetch(proxyUrl);
+      const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 4000));
+      const res = await Promise.race([fetchPromise, timeoutPromise]);
+      if (res && res.ok) {
         const text = await res.text();
         if (text && text.length > 200) {
           htmlText = text;
@@ -80,7 +79,7 @@ const performRealTimeLiveAudit = async (targetUrl) => {
         }
       }
     } catch (e) {
-      console.warn('Proxy fetch attempt notice:', e);
+      // Silent fallback
     }
   }
 
