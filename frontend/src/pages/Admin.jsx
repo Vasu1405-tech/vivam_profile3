@@ -866,17 +866,6 @@ export default function Admin() {
                 )}
               </Button>
             </form>
-
-            <div className="pt-4 border-t border-border/40 flex items-center justify-between text-xs">
-              <span className="text-muted-foreground">Default: <strong className="text-foreground">admin</strong> / <strong className="text-foreground">admin123</strong></span>
-              <button
-                type="button"
-                onClick={() => setLoginForm({ username: 'admin', password: 'admin123' })}
-                className="text-primary hover:underline font-semibold flex items-center gap-1 text-[11px]"
-              >
-                <Sparkles className="w-3 h-3" /> Auto-fill
-              </button>
-            </div>
           </motion.div>
         </div>
       </div>
