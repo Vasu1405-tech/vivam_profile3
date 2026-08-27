@@ -282,6 +282,40 @@ class AdminLoginRequest(BaseModel):
     username: str
     password: str
 
+class ChangePasswordRequest(BaseModel):
+    currentPassword: Optional[str] = ""
+    newPassword: str
+
+@api_router.post("/admin/change-password")
+@api_router.post("/admin/change-password/")
+@app.post("/admin/change-password")
+@app.post("/admin/change-password/")
+@app.post("/api/admin/change-password")
+@app.post("/api/admin/change-password/")
+async def change_admin_password(req: ChangePasswordRequest, authorization: Optional[str] = Header(None)):
+    new_pass = req.newPassword.strip()
+    if not new_pass or len(new_pass) < 4:
+        raise HTTPException(status_code=400, detail="New password must be at least 4 characters long.")
+
+    # Save to MongoDB Atlas collection admin_credentials
+    try:
+        await db.admin_credentials.update_one(
+            {"type": "admin_password"},
+            {"$set": {"password": new_pass, "updated_at": datetime.now(timezone.utc).isoformat()}},
+            upsert=True
+        )
+    except Exception as e:
+        logger.warning(f"Password update DB notice: {e}")
+
+    # Update in-memory allowed passwords
+    ALLOWED_ADMIN_PASSWORDS.add(new_pass)
+
+    return {
+        "success": True,
+        "message": "Administrator password updated successfully!",
+        "password": new_pass
+    }
+
 @api_router.post("/admin/login")
 @api_router.post("/admin/login/")
 @app.post("/admin/login")
@@ -291,6 +325,14 @@ class AdminLoginRequest(BaseModel):
 async def admin_login(req: AdminLoginRequest):
     uname = req.username.strip().lower()
     passwd = req.password.strip()
+
+    # Check dynamic DB password if exists
+    try:
+        stored_cred = await db.admin_credentials.find_one({"type": "admin_password"})
+        if stored_cred and stored_cred.get("password"):
+            ALLOWED_ADMIN_PASSWORDS.add(stored_cred.get("password").strip())
+    except Exception:
+        pass
 
     is_valid_user = uname in ALLOWED_ADMIN_USERS
     is_valid_pass = passwd in ALLOWED_ADMIN_PASSWORDS or passwd == ADMIN_PASSWORD_ENV

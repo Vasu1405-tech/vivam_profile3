@@ -629,6 +629,45 @@ export default function Admin() {
     }
   };
 
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+  const [newPasswordVal, setNewPasswordVal] = useState('');
+  const [confirmPasswordVal, setConfirmPasswordVal] = useState('');
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+
+  const handleUpdatePassword = async (e) => {
+    if (e) e.preventDefault();
+    if (!newPasswordVal || newPasswordVal.length < 4) {
+      toast.error('New password must be at least 4 characters.');
+      return;
+    }
+    if (newPasswordVal !== confirmPasswordVal) {
+      toast.error('Passwords do not match.');
+      return;
+    }
+
+    setIsChangingPassword(true);
+    try {
+      const token = localStorage.getItem('vivam_admin_token');
+      const headers = token ? { Authorization: `Bearer ${token}` } : {};
+      
+      try {
+        await axios.post(`${API}/admin/change-password`, { newPassword: newPasswordVal.trim() }, { headers });
+      } catch (e1) {
+        await axios.post(`${BACKEND_URL}/admin/change-password`, { newPassword: newPasswordVal.trim() }, { headers });
+      }
+
+      toast.success('Admin password updated successfully! Please note your new credentials.');
+      setShowChangePasswordModal(false);
+      setNewPasswordVal('');
+      setConfirmPasswordVal('');
+    } catch (err) {
+      console.error('Password change error:', err);
+      toast.error(err.response?.data?.detail || 'Failed to change password.');
+    } finally {
+      setIsChangingPassword(false);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem('vivam_admin_token');
     localStorage.removeItem('vivam_admin_auth');
@@ -852,7 +891,7 @@ export default function Admin() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 w-full md:w-auto">
+          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             <Button
               variant="outline"
               size="sm"
@@ -870,6 +909,15 @@ export default function Admin() {
               className="rounded-full bg-gradient-to-r from-blue-600 to-violet-600 text-white text-xs font-semibold shadow-md"
             >
               <Download className="w-3.5 h-3.5 mr-1.5" /> Export CSV
+            </Button>
+
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowChangePasswordModal(true)}
+              className="rounded-full text-xs border-primary/40 text-primary hover:bg-primary/10"
+            >
+              <Lock className="w-3.5 h-3.5 mr-1.5" /> Change Password
             </Button>
 
             <Button
@@ -2631,6 +2679,89 @@ export default function Admin() {
                     className="rounded-full bg-gradient-to-r from-blue-600 to-violet-600 text-white font-bold text-xs px-6 shadow-md"
                   >
                     {isSubmittingHighlight ? 'Publishing...' : 'Publish Photo'}
+                  </Button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* CHANGE ADMIN PASSWORD MODAL */}
+      <AnimatePresence>
+        {showChangePasswordModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="relative w-full max-w-md bg-card border border-border rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6"
+            >
+              <button
+                onClick={() => setShowChangePasswordModal(false)}
+                className="absolute top-5 right-5 p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="space-y-1">
+                <Badge variant="outline" className="text-xs text-primary border-primary/30">
+                  Security Settings
+                </Badge>
+                <h3 className="text-2xl font-bold font-outfit text-foreground">Change Password</h3>
+                <p className="text-xs text-muted-foreground">
+                  Enter a new administrator password. It will take effect immediately and be saved securely.
+                </p>
+              </div>
+
+              <form onSubmit={handleUpdatePassword} className="space-y-4 text-xs">
+                <div className="space-y-1.5">
+                  <label className="font-semibold uppercase tracking-wider text-muted-foreground">New Password (min 4 chars) *</label>
+                  <Input
+                    type="password"
+                    placeholder="Enter new password"
+                    value={newPasswordVal}
+                    onChange={(e) => setNewPasswordVal(e.target.value)}
+                    className="bg-background/60 border-border/60"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="font-semibold uppercase tracking-wider text-muted-foreground">Confirm New Password *</label>
+                  <Input
+                    type="password"
+                    placeholder="Confirm new password"
+                    value={confirmPasswordVal}
+                    onChange={(e) => setConfirmPasswordVal(e.target.value)}
+                    className="bg-background/60 border-border/60"
+                    required
+                  />
+                </div>
+
+                <div className="pt-4 flex items-center justify-end gap-3 border-t border-border/40">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => setShowChangePasswordModal(false)}
+                    className="rounded-full text-xs font-bold"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={isChangingPassword}
+                    className="rounded-full bg-gradient-to-r from-blue-600 to-violet-600 text-white font-bold text-xs px-6 shadow-md"
+                  >
+                    {isChangingPassword ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-3.5 h-3.5 mr-1.5" /> Update Password
+                      </>
+                    )}
                   </Button>
                 </div>
               </form>
