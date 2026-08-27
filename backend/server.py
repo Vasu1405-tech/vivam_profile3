@@ -297,18 +297,19 @@ async def change_admin_password(req: ChangePasswordRequest, authorization: Optio
     if not new_pass or len(new_pass) < 4:
         raise HTTPException(status_code=400, detail="New password must be at least 4 characters long.")
 
-    # Save to MongoDB Atlas collection admin_credentials
+    # Save to MongoDB Atlas collection admin_credentials (this is the single source of truth)
     try:
         await db.admin_credentials.update_one(
             {"type": "admin_password"},
-            {"$set": {"password": new_pass, "updated_at": datetime.now(timezone.utc).isoformat()}},
+            {"$set": {
+                "password": new_pass,
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }},
             upsert=True
         )
     except Exception as e:
-        logger.warning(f"Password update DB notice: {e}")
-
-    # Update in-memory allowed passwords
-    ALLOWED_ADMIN_PASSWORDS.add(new_pass)
+        logger.error(f"Password update DB error: {e}")
+        raise HTTPException(status_code=500, detail="Database error while saving new password.")
 
     return {
         "success": True,
@@ -326,16 +327,23 @@ async def admin_login(req: AdminLoginRequest):
     uname = req.username.strip().lower()
     passwd = req.password.strip()
 
-    # Check dynamic DB password if exists
+    # Retrieve current active password from MongoDB Atlas (or fallback to .env / default)
+    active_password = ADMIN_PASSWORD_ENV
     try:
         stored_cred = await db.admin_credentials.find_one({"type": "admin_password"})
         if stored_cred and stored_cred.get("password"):
-            ALLOWED_ADMIN_PASSWORDS.add(stored_cred.get("password").strip())
-    except Exception:
-        pass
+            active_password = stored_cred.get("password").strip()
+    except Exception as db_err:
+        logger.warning(f"Credential lookup notice: {db_err}")
 
-    is_valid_user = uname in ALLOWED_ADMIN_USERS
-    is_valid_pass = passwd in ALLOWED_ADMIN_PASSWORDS or passwd == ADMIN_PASSWORD_ENV
+    # Check allowed usernames
+    is_valid_user = (
+        uname == ADMIN_USERNAME_ENV or
+        uname in {"admin", "admin@vivamsofttech.com", "contact@vivamsofttech.com", "vivamadmin"}
+    )
+    
+    # Password check: ONLY active_password (or ADMIN_PASSWORD_ENV if explicitly set in .env) is accepted
+    is_valid_pass = (passwd == active_password)
 
     if is_valid_user and is_valid_pass:
         import hashlib
@@ -359,7 +367,7 @@ async def admin_login(req: AdminLoginRequest):
             "username": uname
         }
     else:
-        raise HTTPException(status_code=401, detail="Invalid administrator username or password. Default is admin / admin123")
+        raise HTTPException(status_code=401, detail="Invalid administrator username or password.")
 
 @api_router.get("/admin/verify")
 @api_router.get("/admin/verify/")
