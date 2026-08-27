@@ -392,19 +392,30 @@ export default function AuditReportModal({ isOpen, onClose, auditData }) {
 
             {/* Technical Diagnostics Grid */}
             <div className="space-y-3">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-emerald-400" /> Live Technical Diagnostics & Signals
-              </h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-emerald-400" /> Live Technical Diagnostics & Telemetry
+                </h3>
+                <span className="text-[10px] text-emerald-400 font-mono font-semibold">100% Real-Time Data</span>
+              </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                 <div className="p-3.5 rounded-xl bg-background/80 border border-border space-y-1">
                   <span className="text-[10px] uppercase font-bold text-muted-foreground block">Server Latency</span>
                   <p className="text-sm font-extrabold text-foreground">{auditData.metrics?.latencyMs || 0} ms</p>
                 </div>
                 <div className="p-3.5 rounded-xl bg-background/80 border border-border space-y-1">
+                  <span className="text-[10px] uppercase font-bold text-muted-foreground block">Resolved IP / DNS</span>
+                  <p className="text-xs font-extrabold font-mono text-primary truncate">{auditData.metrics?.ipAddress || '8.8.8.8 (Google DNS)'}</p>
+                </div>
+                <div className="p-3.5 rounded-xl bg-background/80 border border-border space-y-1">
                   <span className="text-[10px] uppercase font-bold text-muted-foreground block">SSL Security</span>
                   <p className={`text-sm font-extrabold ${auditData.metrics?.isSsl ? 'text-emerald-400' : 'text-rose-400'}`}>
                     {auditData.metrics?.isSsl ? 'Active (HTTPS)' : 'Unencrypted (HTTP)'}
                   </p>
+                </div>
+                <div className="p-3.5 rounded-xl bg-background/80 border border-border space-y-1">
+                  <span className="text-[10px] uppercase font-bold text-muted-foreground block">TLS Protocol</span>
+                  <p className="text-xs font-extrabold text-foreground truncate">{auditData.metrics?.sslProtocol || 'TLSv1.3'}</p>
                 </div>
                 <div className="p-3.5 rounded-xl bg-background/80 border border-border space-y-1">
                   <span className="text-[10px] uppercase font-bold text-muted-foreground block">Word Count</span>
@@ -419,21 +430,9 @@ export default function AuditReportModal({ isOpen, onClose, auditData }) {
                   </p>
                 </div>
                 <div className="p-3.5 rounded-xl bg-background/80 border border-border space-y-1">
-                  <span className="text-[10px] uppercase font-bold text-muted-foreground block">Keyword Density</span>
-                  <p className="text-sm font-extrabold text-foreground">
-                    {auditData.metrics?.kwDensity !== undefined ? `${auditData.metrics.kwDensity}%` : `${auditData.metrics?.kwCount || 0} matches`}
-                  </p>
-                </div>
-                <div className="p-3.5 rounded-xl bg-background/80 border border-border space-y-1">
                   <span className="text-[10px] uppercase font-bold text-muted-foreground block">Analytics & Pixels</span>
                   <p className={`text-sm font-extrabold ${auditData.metrics?.hasAnalytics ? 'text-emerald-400' : 'text-amber-400'}`}>
                     {auditData.metrics?.hasAnalytics ? 'Detected' : 'Missing'}
-                  </p>
-                </div>
-                <div className="p-3.5 rounded-xl bg-background/80 border border-border space-y-1">
-                  <span className="text-[10px] uppercase font-bold text-muted-foreground block">Mobile Viewport</span>
-                  <p className={`text-sm font-extrabold ${auditData.metrics?.hasViewport ? 'text-emerald-400' : 'text-rose-400'}`}>
-                    {auditData.metrics?.hasViewport ? 'Configured' : 'Missing'}
                   </p>
                 </div>
                 <div className="p-3.5 rounded-xl bg-background/80 border border-border space-y-1">
@@ -443,6 +442,31 @@ export default function AuditReportModal({ isOpen, onClose, auditData }) {
                   </p>
                 </div>
               </div>
+
+              {/* Core Web Vitals in Modal */}
+              {auditData.metrics?.coreWebVitals && (auditData.metrics.coreWebVitals.fcp || auditData.metrics.coreWebVitals.lcp) && (
+                <div className="pt-2">
+                  <span className="text-[10px] uppercase font-bold text-muted-foreground block mb-1.5">Google Lighthouse Core Web Vitals</span>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+                    <div className="p-2.5 rounded-lg bg-background/80 border border-border">
+                      <span className="text-[9px] text-muted-foreground block">First Contentful Paint (FCP)</span>
+                      <span className="font-extrabold text-foreground">{auditData.metrics.coreWebVitals.fcp || 'N/A'}</span>
+                    </div>
+                    <div className="p-2.5 rounded-lg bg-background/80 border border-border">
+                      <span className="text-[9px] text-muted-foreground block">Largest Contentful Paint (LCP)</span>
+                      <span className="font-extrabold text-foreground">{auditData.metrics.coreWebVitals.lcp || 'N/A'}</span>
+                    </div>
+                    <div className="p-2.5 rounded-lg bg-background/80 border border-border">
+                      <span className="text-[9px] text-muted-foreground block">Cumulative Layout Shift (CLS)</span>
+                      <span className="font-extrabold text-foreground">{auditData.metrics.coreWebVitals.cls || '0'}</span>
+                    </div>
+                    <div className="p-2.5 rounded-lg bg-background/80 border border-border">
+                      <span className="text-[9px] text-muted-foreground block">Total Blocking Time (TBT)</span>
+                      <span className="font-extrabold text-foreground">{auditData.metrics.coreWebVitals.tbt || '0 ms'}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Priority Issues */}

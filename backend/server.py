@@ -17,6 +17,9 @@ import asyncio
 from urllib.parse import urlparse
 from io import BytesIO
 from pathlib import Path
+import ssl
+import json
+
 
 # ReportLab PDF Generation
 try:
@@ -539,6 +542,119 @@ async def generate_ai_recommendations_and_roadmap(title: str, meta_desc: str, do
     }
 
 
+async def fetch_real_dns_info(domain: str) -> dict:
+    """Fetch authoritative DNS resolution via Google Public DNS (DoH)."""
+    dns_data = {
+        "ipAddress": None,
+        "allIps": [],
+        "dnsTtl": 60,
+        "dnsServer": "Google Public DNS (8.8.8.8)",
+        "mxRecords": []
+    }
+    try:
+        timeout = aiohttp.ClientTimeout(total=4)
+        async with aiohttp.ClientSession(timeout=timeout) as session:
+            # Query A Records (IPv4)
+            async with session.get(f"https://dns.google/resolve?name={domain}&type=A") as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    answers = data.get("Answer", [])
+                    ips = [ans["data"] for ans in answers if ans.get("type") == 1]
+                    if ips:
+                        dns_data["ipAddress"] = ips[0]
+                        dns_data["allIps"] = ips
+                        dns_data["dnsTtl"] = answers[0].get("TTL", 60)
+            
+            # Query MX Records (Mail)
+            async with session.get(f"https://dns.google/resolve?name={domain}&type=MX") as resp_mx:
+                if resp_mx.status == 200:
+                    data_mx = await resp_mx.json()
+                    dns_data["mxRecords"] = [ans["data"] for ans in data_mx.get("Answer", []) if ans.get("type") == 15]
+    except Exception as e:
+        logger.debug(f"DNS lookup notice for {domain}: {e}")
+    return dns_data
+
+
+def fetch_real_ssl_details(domain: str) -> dict:
+    """Perform real TLS handshake to extract SSL certificate details and expiration."""
+    ssl_info = {
+        "sslActive": False,
+        "sslIssuer": None,
+        "sslSubject": None,
+        "sslExpires": None,
+        "sslProtocol": None,
+        "sslCipher": None
+    }
+    try:
+        ctx = ssl.create_default_context()
+        with socket.create_connection((domain, 443), timeout=4) as sock:
+            with ctx.wrap_socket(sock, server_hostname=domain) as ssock:
+                cert = ssock.getpeercert()
+                ssl_info["sslActive"] = True
+                ssl_info["sslProtocol"] = ssock.version()
+                cipher = ssock.cipher()
+                if cipher:
+                    ssl_info["sslCipher"] = cipher[0]
+                
+                # Issuer Organization / Common Name
+                issuer_dict = dict(x[0] for x in cert.get('issuer', []))
+                ssl_info["sslIssuer"] = issuer_dict.get('organizationName') or issuer_dict.get('commonName') or 'Trusted Certificate Authority'
+                
+                # Subject Common Name
+                subject_dict = dict(x[0] for x in cert.get('subject', []))
+                ssl_info["sslSubject"] = subject_dict.get('commonName') or domain
+                
+                # Expiration Date
+                ssl_info["sslExpires"] = cert.get('notAfter')
+    except Exception as e:
+        logger.debug(f"SSL handshake notice for {domain}: {e}")
+    return ssl_info
+
+
+async def fetch_google_pagespeed_vitals(url: str) -> dict:
+    """Fetch official Google Lighthouse and Core Web Vitals from Google PageSpeed Insights."""
+    vitals = {
+        "lighthousePerformance": None,
+        "lighthouseSeo": None,
+        "lighthouseAccessibility": None,
+        "fcp": None,
+        "lcp": None,
+        "cls": None,
+        "tbt": None,
+        "speedIndex": None
+    }
+    try:
+        api_url = f"https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url={url}&strategy=mobile&category=performance&category=seo&category=accessibility&category=best-practices"
+        timeout = aiohttp.ClientTimeout(total=8)
+        async with aiohttp.ClientSession(timeout=timeout) as session:
+            async with session.get(api_url) as resp:
+                if resp.status == 200:
+                    data = await resp.json()
+                    lh = data.get("lighthouseResult", {})
+                    cats = lh.get("categories", {})
+                    if "performance" in cats:
+                        vitals["lighthousePerformance"] = int(cats["performance"].get("score", 0) * 100)
+                    if "seo" in cats:
+                        vitals["lighthouseSeo"] = int(cats["seo"].get("score", 0) * 100)
+                    if "accessibility" in cats:
+                        vitals["lighthouseAccessibility"] = int(cats["accessibility"].get("score", 0) * 100)
+                    
+                    audits = lh.get("audits", {})
+                    if "first-contentful-paint" in audits:
+                        vitals["fcp"] = audits["first-contentful-paint"].get("displayValue")
+                    if "largest-contentful-paint" in audits:
+                        vitals["lcp"] = audits["largest-contentful-paint"].get("displayValue")
+                    if "cumulative-layout-shift" in audits:
+                        vitals["cls"] = audits["cumulative-layout-shift"].get("displayValue")
+                    if "total-blocking-time" in audits:
+                        vitals["tbt"] = audits["total-blocking-time"].get("displayValue")
+                    if "speed-index" in audits:
+                        vitals["speedIndex"] = audits["speed-index"].get("displayValue")
+    except Exception as e:
+        logger.debug(f"Google PageSpeed notice for {url}: {e}")
+    return vitals
+
+
 @api_router.post("/digital-marketing/audit")
 @api_router.post("/digital-marketing/audit/")
 @api_router.post("/audit-website")
@@ -575,6 +691,8 @@ async def run_digital_marketing_audit(req: AuditRequest, request: Request):
     final_url = raw_url
     is_ssl = raw_url.startswith("https://")
     sec_headers = {}
+    content_size_bytes = 0
+    server_header = "Web Server"
 
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36 VivamAuditBot/2.0",
@@ -582,44 +700,55 @@ async def run_digital_marketing_audit(req: AuditRequest, request: Request):
         "Accept-Language": "en-US,en;q=0.9"
     }
 
-    try:
-        timeout = aiohttp.ClientTimeout(total=10)
-        connector = aiohttp.TCPConnector(ssl=False)
-        async with aiohttp.ClientSession(timeout=timeout, connector=connector) as session:
-            try:
-                async with session.get(raw_url, headers=headers, allow_redirects=True) as resp:
-                    latency_ms = int((time.time() - start_time) * 1000)
-                    status_code = resp.status
-                    final_url = str(resp.url)
-
-                    # Revalidate redirect target URL for SSRF security
-                    if final_url != raw_url:
-                        validate_target_url(final_url)
-
-                    is_ssl = final_url.startswith("https://")
-                    sec_headers = {k.lower(): v for k, v in resp.headers.items()}
-                    chunk = await resp.content.read(5 * 1024 * 1024)  # 5MB max payload limit
-                    html_content = chunk.decode("utf-8", errors="ignore")
-            except Exception as http_err:
-                if raw_url.startswith("https://"):
-                    fallback_url = raw_url.replace("https://", "http://", 1)
-                    async with session.get(fallback_url, headers=headers, allow_redirects=True) as resp_fb:
+    # Execute Live Crawl, Real DNS Resolution & SSL Handshake concurrently
+    async def crawl_page():
+        nonlocal latency_ms, status_code, final_url, is_ssl, sec_headers, html_content, content_size_bytes, server_header
+        try:
+            timeout = aiohttp.ClientTimeout(total=10)
+            connector = aiohttp.TCPConnector(ssl=False)
+            async with aiohttp.ClientSession(timeout=timeout, connector=connector) as session:
+                try:
+                    async with session.get(raw_url, headers=headers, allow_redirects=True) as resp:
                         latency_ms = int((time.time() - start_time) * 1000)
-                        status_code = resp_fb.status
-                        final_url = str(resp_fb.url)
-                        is_ssl = False
-                        sec_headers = {k.lower(): v for k, v in resp_fb.headers.items()}
-                        chunk = await resp_fb.content.read(5 * 1024 * 1024)
+                        status_code = resp.status
+                        final_url = str(resp.url)
+                        if final_url != raw_url:
+                            validate_target_url(final_url)
+                        is_ssl = final_url.startswith("https://")
+                        sec_headers = {k.lower(): v for k, v in resp.headers.items()}
+                        server_header = sec_headers.get("server", "Web Server")
+                        chunk = await resp.content.read(5 * 1024 * 1024)
+                        content_size_bytes = len(chunk)
                         html_content = chunk.decode("utf-8", errors="ignore")
-                else:
-                    raise http_err
-    except asyncio.TimeoutError:
-        raise HTTPException(status_code=408, detail="Audit timeout: Target website did not respond within 10 seconds.")
-    except HTTPException as he:
-        raise he
-    except Exception as e:
-        logger.warning(f"Audit fetch notice for {raw_url}: {e}")
-        latency_ms = int((time.time() - start_time) * 1000) or 320
+                except Exception as http_err:
+                    if raw_url.startswith("https://"):
+                        fallback_url = raw_url.replace("https://", "http://", 1)
+                        async with session.get(fallback_url, headers=headers, allow_redirects=True) as resp_fb:
+                            latency_ms = int((time.time() - start_time) * 1000)
+                            status_code = resp_fb.status
+                            final_url = str(resp_fb.url)
+                            is_ssl = False
+                            sec_headers = {k.lower(): v for k, v in resp_fb.headers.items()}
+                            server_header = sec_headers.get("server", "Web Server")
+                            chunk = await resp_fb.content.read(5 * 1024 * 1024)
+                            content_size_bytes = len(chunk)
+                            html_content = chunk.decode("utf-8", errors="ignore")
+                    else:
+                        raise http_err
+        except Exception as e:
+            logger.warning(f"Audit fetch notice for {raw_url}: {e}")
+            latency_ms = int((time.time() - start_time) * 1000) or 320
+
+    # Run tasks concurrently in event loop
+    dns_task = asyncio.create_task(fetch_real_dns_info(domain))
+    ssl_task = asyncio.to_thread(fetch_real_ssl_details, domain)
+    pagespeed_task = asyncio.create_task(fetch_google_pagespeed_vitals(raw_url))
+    await crawl_page()
+    
+    dns_info, ssl_info, pagespeed_vitals = await asyncio.gather(dns_task, ssl_task, pagespeed_task)
+    if ssl_info.get("sslActive"):
+        is_ssl = True
+
 
     # 1. Technical SEO Signals
     title = ""
@@ -1022,7 +1151,18 @@ async def run_digital_marketing_audit(req: AuditRequest, request: Request):
         "metrics": {
             "companyLogo": f"https://www.google.com/s2/favicons?domain={domain}&sz=128",
             "latencyMs": latency_ms,
-
+            "ipAddress": dns_info.get("ipAddress"),
+            "allIps": dns_info.get("allIps", []),
+            "dnsTtl": dns_info.get("dnsTtl", 60),
+            "dnsServer": dns_info.get("dnsServer", "Google Public DNS (8.8.8.8)"),
+            "mxRecords": dns_info.get("mxRecords", []),
+            "sslIssuer": ssl_info.get("sslIssuer"),
+            "sslExpires": ssl_info.get("sslExpires"),
+            "sslProtocol": ssl_info.get("sslProtocol"),
+            "sslCipher": ssl_info.get("sslCipher"),
+            "serverHeader": server_header,
+            "contentSizeBytes": content_size_bytes,
+            "coreWebVitals": pagespeed_vitals,
             "statusCode": status_code,
             "isSsl": is_ssl,
             "title": title or domain,
