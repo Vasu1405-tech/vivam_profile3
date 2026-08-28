@@ -594,11 +594,6 @@ export default function InteractiveAuditCalculator({ onClaimAudit }) {
     }
   };
 
-
-  const handleOpenLeadModal = () => {
-    setIsLeadModalOpen(true);
-  };
-
   return (
     <section id="instant-audit-tool" className="py-20 border-t border-border/40 bg-card/20 relative overflow-hidden">
       {/* Background Accent Glow */}
