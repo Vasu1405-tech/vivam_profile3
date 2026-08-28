@@ -571,10 +571,30 @@ export default function AuditReportModal({ isOpen, onClose, auditData }) {
               )
             )}
 
-            {/* Footer */}
+            {/* Footer & Back Navigation */}
             <div className="pt-6 border-t border-border flex flex-col sm:flex-row justify-between items-center text-xs text-muted-foreground gap-4">
-              <p>Prepared by <strong>Vivam Software Services & IT Trainings Pvt Ltd</strong></p>
-              <p>https://vivamsofttech.com | contact@vivamsofttech.com</p>
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <Button
+                  onClick={onClose}
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full text-xs font-bold border-primary/40 text-primary hover:bg-primary/10"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Calculator
+                </Button>
+                <Button
+                  onClick={handleDownloadPdf}
+                  size="sm"
+                  className="rounded-full bg-gradient-to-r from-blue-600 to-violet-600 text-white font-bold text-xs shadow-md"
+                >
+                  <Download className="w-3.5 h-3.5 mr-1.5" /> Download PDF
+                </Button>
+              </div>
+
+              <div className="text-center sm:text-right space-y-0.5 text-[11px]">
+                <p>Prepared by <strong>Vivam Software Services & IT Trainings Pvt Ltd</strong></p>
+                <p className="text-muted-foreground">https://vivamsofttech.com | contact@vivamsofttech.com</p>
+              </div>
             </div>
           </div>
         </motion.div>
