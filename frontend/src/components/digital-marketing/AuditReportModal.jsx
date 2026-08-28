@@ -9,7 +9,7 @@ import { downloadFileFromResponse, downloadBlob, triggerDirectUrlDownload, viewD
 
 const BACKEND_URL = (process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001').replace(/\/$/, '');
 
-const generateClientAuditHtml = (auditData) => {
+export const generateClientAuditHtml = (auditData) => {
   const auditId = auditData.auditId || 'LIVE-AUDIT';
   const url = auditData.url || auditData.domain || 'Website';
   const domain = auditData.domain || url.replace(/^https?:\/\//, '').split('/')[0];
