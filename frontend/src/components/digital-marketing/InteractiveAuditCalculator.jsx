@@ -463,23 +463,9 @@ export default function InteractiveAuditCalculator({ onClaimAudit }) {
     setIsReportModalOpen(true);
   };
 
-  const handleDownloadReportFile = async () => {
+  const handleDownloadReportFile = () => {
     if (!auditResult) return;
-    const cleanDomain = (auditResult.domain || 'report').replace(/[^a-zA-Z0-9_-]/g, '_');
-    const fallbackFilename = `Vivam-SEO-Audit-${cleanDomain}.html`;
-    try {
-      if (auditResult.auditId) {
-        const downloadUrl = `${API}/digital-marketing/audit/${auditResult.auditId}/download?format=html`;
-        const res = await axios.get(downloadUrl, { responseType: 'blob' });
-        downloadFileFromResponse(res, fallbackFilename, 'text/html');
-        toast.success(`HTML audit report downloaded for ${auditResult.domain}!`);
-      } else {
-        setIsReportModalOpen(true);
-      }
-    } catch (err) {
-      console.warn('Backend download failed, opening report viewer:', err);
-      setIsReportModalOpen(true);
-    }
+    setIsReportModalOpen(true);
   };
 
   // Advanced form toggle

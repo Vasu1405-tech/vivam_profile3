@@ -187,28 +187,46 @@ export default function AuditReportModal({ isOpen, onClose, auditData }) {
   };
 
   const handleViewPdf = () => {
+    try {
+      const html = generateClientAuditHtml(auditData);
+      const printWin = window.open('', '_blank');
+      if (printWin) {
+        printWin.document.write(html);
+        printWin.document.close();
+        setTimeout(() => {
+          printWin.focus();
+          printWin.print();
+        }, 500);
+        return;
+      }
+    } catch (e) {
+      console.warn('Popup print notice:', e);
+    }
     window.print();
   };
 
   const handleDownloadPdf = async () => {
-    const cleanDomain = (auditData.domain || 'report').replace(/[^a-zA-Z0-9_-]/g, '_');
+    const rawDomain = auditData.domain || auditData.url || 'report';
+    const cleanDomain = rawDomain.replace(/^https?:\/\//, '').split('/')[0].replace(/[^a-zA-Z0-9_-]/g, '_');
     const fallbackFilename = `Vivam-SEO-Audit-${cleanDomain}.pdf`;
     toast.info('Generating PDF report...');
 
-    if (auditData.auditId && !auditData.auditId.startsWith('audit-')) {
+    // 1. Try Backend PDF Endpoint
+    if (auditData.auditId && !auditData.auditId.startsWith('audit-live-')) {
       try {
-        const downloadUrl = `${BACKEND_URL}/api/digital-marketing/audit/${auditData.auditId}/pdf/${fallbackFilename}`;
-        const res = await axios.get(downloadUrl, { responseType: 'blob' });
+        const downloadUrl = `${BACKEND_URL}/api/digital-marketing/audit/${auditData.auditId}/download?format=pdf`;
+        const res = await axios.get(downloadUrl, { responseType: 'blob', timeout: 8000 });
         if (res.status === 200 && res.data && res.data.size > 100) {
-          downloadFileFromResponse(res, fallbackFilename, 'application/pdf');
+          downloadBlob(res.data, fallbackFilename, 'application/pdf');
           toast.success('Official PDF audit report downloaded successfully!');
           return;
         }
       } catch (err) {
-        console.warn('Backend PDF endpoint notice, fallback to client PDF generator:', err);
+        console.warn('Backend PDF endpoint notice, using client generator:', err);
       }
     }
     
+    // 2. Client-side HTML2PDF Generator
     let container = null;
     try {
       const html2pdf = await loadHtml2Pdf();
@@ -245,32 +263,29 @@ export default function AuditReportModal({ isOpen, onClose, auditData }) {
       if (container && document.body.contains(container)) {
         document.body.removeChild(container);
       }
-      console.warn('PDF generation fallback to print:', err);
-      toast.info('Opening print dialog to save PDF...');
-      window.print();
+      console.warn('PDF library fallback, downloading full HTML report & opening print:', err);
+      
+      // Guaranteed Instant Fallback: Download HTML and open Print
+      const html = generateClientAuditHtml(auditData);
+      const htmlBlob = new Blob([html], { type: 'text/html;charset=utf-8;' });
+      downloadBlob(htmlBlob, `Vivam-SEO-Audit-${cleanDomain}.html`, 'text/html');
+      toast.success('Downloaded complete interactive audit report!');
+      handleViewPdf();
     }
   };
 
-  const handleDownloadFile = async () => {
-    const cleanDomain = (auditData.domain || 'report').replace(/[^a-zA-Z0-9_-]/g, '_');
-    const fallbackFilename = `Vivam-SEO-Audit-${cleanDomain}.html`;
+  const handleDownloadFile = () => {
+    const rawDomain = auditData.domain || auditData.url || 'report';
+    const cleanDomain = rawDomain.replace(/^https?:\/\//, '').split('/')[0].replace(/[^a-zA-Z0-9_-]/g, '_');
+    const filename = `Vivam-SEO-Audit-${cleanDomain}.html`;
     try {
-      if (auditData.auditId) {
-        const downloadUrl = `${BACKEND_URL}/api/digital-marketing/audit/${auditData.auditId}/download/${fallbackFilename}?format=html`;
-        triggerDirectUrlDownload(downloadUrl, fallbackFilename);
-        toast.success('Downloading official HTML audit report...');
-      } else {
-        const html = generateClientAuditHtml(auditData);
-        const htmlBlob = new Blob([html], { type: 'text/html;charset=utf-8;' });
-        downloadBlob(htmlBlob, fallbackFilename, 'text/html');
-        toast.success('HTML audit report downloaded!');
-      }
-    } catch (err) {
-      console.warn('Backend audit download error, using client generator:', err);
       const html = generateClientAuditHtml(auditData);
       const htmlBlob = new Blob([html], { type: 'text/html;charset=utf-8;' });
-      downloadBlob(htmlBlob, fallbackFilename, 'text/html');
-      toast.success('HTML audit report downloaded!');
+      downloadBlob(htmlBlob, filename, 'text/html');
+      toast.success('HTML audit report downloaded successfully!');
+    } catch (err) {
+      console.error('HTML download error:', err);
+      toast.error('Failed to download report file.');
     }
   };
 

@@ -1776,12 +1776,17 @@ def generate_audit_pdf_report(audit: dict) -> bytes:
 
 
 @api_router.get("/digital-marketing/audit/{audit_id}/download")
+@api_router.get("/digital-marketing/audit/{audit_id}/download/")
+@app.get("/digital-marketing/audit/{audit_id}/download")
+@app.get("/digital-marketing/audit/{audit_id}/download/")
+@app.get("/api/digital-marketing/audit/{audit_id}/download")
+@app.get("/api/digital-marketing/audit/{audit_id}/download/")
 async def download_digital_marketing_audit(audit_id: str, format: str = "html", view: bool = False):
     audit = await db.digital_marketing_audits.find_one({"$or": [{"auditId": audit_id}, {"id": audit_id}]}, {"_id": 0})
     if not audit:
         raise HTTPException(status_code=404, detail="Audit report not found or expired.")
     
-    raw_domain = audit.get("normalizedUrl", audit.get("url", "website"))
+    raw_domain = audit.get("normalizedUrl", audit.get("domain", audit.get("url", "website")))
     clean_domain = re.sub(r'https?://', '', raw_domain).split('/')[0]
     clean_domain = re.sub(r'[^a-zA-Z0-9_-]', '_', clean_domain).strip('_') or "website"
     
@@ -1813,10 +1818,16 @@ async def download_digital_marketing_audit(audit_id: str, format: str = "html", 
 
 @api_router.get("/digital-marketing/audit/{audit_id}/pdf")
 @api_router.get("/digital-marketing/audit/{audit_id}/pdf/{filename:path}")
+@app.get("/digital-marketing/audit/{audit_id}/pdf")
+@app.get("/digital-marketing/audit/{audit_id}/pdf/{filename:path}")
+@app.get("/api/digital-marketing/audit/{audit_id}/pdf")
+@app.get("/api/digital-marketing/audit/{audit_id}/pdf/{filename:path}")
 async def download_digital_marketing_audit_pdf(audit_id: str, filename: str = None, view: bool = False):
     return await download_digital_marketing_audit(audit_id, format="pdf", view=view)
 
 @api_router.get("/digital-marketing/audit/{audit_id}/download/{filename:path}")
+@app.get("/digital-marketing/audit/{audit_id}/download/{filename:path}")
+@app.get("/api/digital-marketing/audit/{audit_id}/download/{filename:path}")
 async def download_digital_marketing_audit_with_filename(audit_id: str, filename: str = None, format: str = "html", view: bool = False):
     return await download_digital_marketing_audit(audit_id, format=format, view=view)
 
